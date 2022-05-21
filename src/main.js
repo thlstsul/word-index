@@ -8,6 +8,7 @@ import {
   Collapse,
   Divider,
   Empty,
+  Typography,
 } from "ant-design-vue";
 
 const app = createApp(App);
@@ -18,4 +19,5 @@ app.use(Pagination);
 app.use(Collapse);
 app.use(Divider);
 app.use(Empty);
+app.use(Typography);
 app.mount("#app");

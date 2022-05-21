@@ -28,7 +28,7 @@
               @click="() => open_file(doc.path)"
               block
             >打开原文件</a-button>
-            <p>{{ doc.content }}</p>
+            <pre class="doc_content">{{doc.content}}</pre>
           </a-collapse-panel>
 
         </a-collapse>
@@ -113,5 +113,9 @@ async function search_doc_file(keyword, pageNum, pageSize) {
 <style scoped>
 .search_wrapper {
   padding: 24px;
+}
+
+.doc_content {
+  font-family: "Microsoft YaHei";
 }
 </style>
