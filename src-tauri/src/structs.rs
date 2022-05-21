@@ -1,8 +1,11 @@
-use std::{fs::File, path::{Path, PathBuf}, time::SystemTime};
+use std::{
+    fs::File,
+    path::{Path, PathBuf},
+    time::SystemTime,
+};
 
-use pandoc::OutputKind;
-use pandoc::PandocOutput::{ToBuffer, ToBufferRaw};
 use serde::{Deserialize, Serialize};
+use tauri::api::process::Command;
 use tracing::info;
 
 use crate::utils::union_err;
@@ -71,21 +74,15 @@ fn get_file_timestamp(path: &Path) -> Result<u64, String> {
 /// 需要提前安装pandoc
 fn read_docx_file(path: &str) -> Result<String, String> {
     info!("read_docx_file: {}", path);
-    let path = Path::new(path);
-    //要先安装pandoc
-    let mut pandoc = pandoc::new();
-    pandoc
-        .add_input(path)
-        .set_output_format(pandoc::OutputFormat::Plain, vec![])
-        .add_option(pandoc::PandocOption::AtxHeaders)
-        .add_option(pandoc::PandocOption::NoWrap)
-        .set_output(OutputKind::Pipe);
-    pandoc
-        .execute()
-        .map(|output| match output {
-            ToBuffer(buf) => buf,
-            ToBufferRaw(buf) => std::str::from_utf8(&buf).unwrap().to_string(),
-            _ => String::new(),
-        })
+    Command::new("pandoc")
+        .args(&[
+            "-t",
+            "plain",
+            "--wrap=none",
+            "--markdown-headings=atx",
+            path,
+        ])
+        .output()
+        .map(|output| output.stdout)
         .map_err(union_err)
 }

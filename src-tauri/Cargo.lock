@@ -60,7 +60,6 @@ dependencies = [
  "lazy_static",
  "md5",
  "meilisearch-sdk",
- "pandoc",
  "serde",
  "serde_json",
  "tauri",
@@ -1525,15 +1524,6 @@ dependencies = [
 
 [[package]]
 name = "itertools"
-version = "0.8.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f56a2d0bc861f9165be4eb3442afd3c236d8a98afd426f65d92324ae1091a484"
-dependencies = [
- "either",
-]
-
-[[package]]
-name = "itertools"
 version = "0.10.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a9a9d19fa1e79b6215ff29b9d6880b706147f16e9b1dbb1e4e5947b5b02bc5e3"
@@ -2155,15 +2145,6 @@ checksum = "2c92f2b54f081d635c77e7120862d48db8e91f7f21cef23ab1b4fe9971c59f55"
 dependencies = [
  "libc",
  "winapi",
-]
-
-[[package]]
-name = "pandoc"
-version = "0.8.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0d4e5728b4bdfe27803e2376f1e4d07c19dc497d8bfb1bed87878b7815fa989a"
-dependencies = [
- "itertools 0.8.2",
 ]
 
 [[package]]
@@ -3198,7 +3179,7 @@ dependencies = [
  "anyhow",
  "cfg-expr 0.8.1",
  "heck 0.3.3",
- "itertools 0.10.3",
+ "itertools",
  "pkg-config",
  "strum 0.21.0",
  "strum_macros 0.21.1",

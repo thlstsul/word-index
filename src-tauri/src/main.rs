@@ -6,15 +6,15 @@
 use std::path::{Path, PathBuf};
 
 use crate::config::{get_configs, save_config};
-use crate::meili_client::{MeiliClient, stop_meilisearch};
+use crate::meili_client::{stop_meilisearch, MeiliClient};
 use crate::utils::union_err;
 use lazy_static::*;
 use meilisearch_sdk::search::SearchResults;
 use serde_json::{json, Value};
 use structs::Docx;
-use tauri::{WindowEvent, Manager};
 use tauri::api::dir::{read_dir, DiskEntry};
 use tauri::api::process::Command;
+use tauri::{Manager, WindowEvent};
 use tracing::info;
 
 mod config;
@@ -35,14 +35,12 @@ fn main() {
     tauri::Builder::default()
         .setup(|app| {
             let main_window = app.get_window("main").unwrap();
-            main_window.on_window_event(|event| {
-                match event {
-                    WindowEvent::CloseRequested { .. } => {
-                        info!("CloseRequested");
-                        stop_meilisearch();
-                    },
-                    _ => {}
+            main_window.on_window_event(|event| match event {
+                WindowEvent::CloseRequested { .. } => {
+                    info!("CloseRequested");
+                    stop_meilisearch();
                 }
+                _ => {}
             });
             Ok(())
         })

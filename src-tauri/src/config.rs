@@ -1,6 +1,6 @@
+use serde_json::{json, Value};
 use std::io::Write;
 use std::{fs::File, io::Read};
-use serde_json::{Value, json};
 use tracing::info;
 
 use crate::utils::union_err;
