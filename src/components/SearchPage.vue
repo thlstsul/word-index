@@ -19,8 +19,8 @@
           accordion
         >
           <a-collapse-panel
-            v-for="doc in docs"
-            :key="doc"
+            v-for="(doc, i) in docs"
+            :key="i"
             :header="doc.name"
           >
             <a-button
@@ -30,7 +30,6 @@
             >打开原文件</a-button>
             <pre class="doc_content">{{doc.content}}</pre>
           </a-collapse-panel>
-
         </a-collapse>
       </a-layout-content>
       <a-layout-footer>
@@ -58,7 +57,7 @@ export default {
     const current = ref(1);
     const total = ref(0);
     const docs = ref([]);
-    const activeDoc = ref({});
+    const activeDoc = ref([]);
     const pageSize = ref(5);
 
     const search = () => {
