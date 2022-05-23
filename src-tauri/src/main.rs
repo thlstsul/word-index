@@ -31,13 +31,15 @@ lazy_static! {
 }
 
 fn main() {
-    tracing_subscriber::fmt::init();
+    let file_appender = tracing_appender::rolling::never(".", "word-index.log");
+    let (non_blocking, _guard) = tracing_appender::non_blocking(file_appender);
+    tracing_subscriber::fmt().with_writer(non_blocking).init();
     tauri::Builder::default()
         .setup(|app| {
             let main_window = app.get_window("main").unwrap();
             main_window.on_window_event(|event| match event {
-                WindowEvent::CloseRequested { .. } => {
-                    info!("CloseRequested");
+                WindowEvent::Destroyed => {
+                    info!("Destroyed");
                     stop_meilisearch();
                 }
                 _ => {}
@@ -60,7 +62,7 @@ fn main() {
 async fn index_doc_file(dir_path: String) -> Result<(), String> {
     info!("index_doc_file: {}", dir_path);
     let file_paths = plat_dir(&dir_path)?;
-    for file_path in file_paths {
+    for file_path in file_paths.iter().rev() {
         if file_path.is_file() && file_path.extension() == Some(std::ffi::OsStr::new("docx")) {
             let mut docx = Docx::new(&file_path)?;
 
@@ -82,7 +84,8 @@ async fn index_doc_file(dir_path: String) -> Result<(), String> {
 fn plat_dir(dir: &str) -> Result<Vec<PathBuf>, String> {
     let dir_path = Path::new(&dir);
     let dir_entry = read_dir(dir_path, true).map_err(union_err)?;
-    let paths = disk_entry_recursive(dir_entry);
+    let mut paths = disk_entry_recursive(dir_entry);
+    paths.sort();
     Ok(paths)
 }
 
@@ -120,7 +123,6 @@ async fn search_doc_file(keyword: String, offset: usize, limit: usize) -> Result
         .iter()
         .map(|hit| hit.result.clone())
         .collect::<Vec<Docx>>());
-    info!("search_doc_file result: {}", ret);
     Ok(ret)
 }
 

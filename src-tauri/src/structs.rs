@@ -62,7 +62,7 @@ fn get_file_timestamp(path: &Path) -> Result<u64, String> {
     let timestamp = file
         .metadata()
         .map_err(union_err)?
-        .created()
+        .modified()
         .map_err(union_err)?
         .duration_since(SystemTime::UNIX_EPOCH)
         .map_err(union_err)?
