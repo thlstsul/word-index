@@ -1,0 +1,30 @@
+[2m2022-05-25T13:51:02.637785Z[0m [32m INFO[0m [2mapp[0m[2m:[0m search_doc_file query: , offset: 0, limit: 5
+[2m2022-05-25T13:51:02.637960Z[0m [32m INFO[0m [2mapp::meili_client[0m[2m:[0m restart_meilisearch
+[2m2022-05-25T13:51:02.985437Z[0m [32m INFO[0m [2mapp::meili_client[0m[2m:[0m start_meilisearch: Start-Process -WindowStyle Hidden -FilePath meilisearch -ArgumentList "--db-path=E:\project\rust\word-index\src-tauri\data.ms --http-addr=localhost:7700 --master-key=thlstsul"
+[2m2022-05-25T13:51:03.307279Z[0m [32m INFO[0m [2mapp::meili_client[0m[2m:[0m search: 
+[2m2022-05-25T13:53:57.636343Z[0m [32m INFO[0m [2mapp[0m[2m:[0m Destroyed
+[2m2022-05-25T13:53:57.636420Z[0m [32m INFO[0m [2mapp::meili_client[0m[2m:[0m stop_meilisearch
+[2m2022-05-25T14:00:10.440260Z[0m [32m INFO[0m [1mapp[0m[2m:[0m search_doc_file query: , offset: 0, limit: 5
+[2m2022-05-25T14:00:10.440647Z[0m [32m INFO[0m [1mapp::meili_client[0m[2m:[0m restart_meilisearch
+[2m2022-05-25T14:00:10.845926Z[0m [32m INFO[0m [1mapp::meili_client[0m[2m:[0m start_meilisearch: Start-Process -WindowStyle Hidden -FilePath meilisearch -ArgumentList "--db-path=E:\project\rust\word-index\src-tauri\data.ms --http-addr=localhost:7700 --master-key=thlstsul"
+[2m2022-05-25T14:00:11.193619Z[0m [32m INFO[0m [1mapp::meili_client[0m[2m:[0m search: 
+[2m2022-05-25T14:00:46.290586Z[0m [32m INFO[0m [1mapp[0m[2m:[0m Destroyed
+[2m2022-05-25T14:00:46.290646Z[0m [32m INFO[0m [1mapp::meili_client[0m[2m:[0m stop_meilisearch
+  [2m2022-05-25T14:02:27.491915Z[0m [32m INFO[0m [1;32mapp[0m[32m: [32msearch_doc_file query: , offset: 0, limit: 5[0m
+    [2;3mat[0m src\main.rs:113
+
+  [2m2022-05-25T14:02:27.492162Z[0m [32m INFO[0m [1;32mapp::meili_client[0m[32m: [32mrestart_meilisearch[0m
+    [2;3mat[0m src\meili_client.rs:70
+
+  [2m2022-05-25T14:02:27.850451Z[0m [32m INFO[0m [1;32mapp::meili_client[0m[32m: [32mstart_meilisearch: Start-Process -WindowStyle Hidden -FilePath meilisearch -ArgumentList "--db-path=E:\project\rust\word-index\src-tauri\data.ms --http-addr=localhost:7700 --master-key=thlstsul"[0m
+    [2;3mat[0m src\meili_client.rs:82
+
+  [2m2022-05-25T14:02:28.164473Z[0m [32m INFO[0m [1;32mapp::meili_client[0m[32m: [32msearch: [0m
+    [2;3mat[0m src\meili_client.rs:43
+
+  [2m2022-05-25T14:04:44.204285Z[0m [32m INFO[0m [1;32mapp[0m[32m: [32mDestroyed[0m
+    [2;3mat[0m src\main.rs:42
+
+  [2m2022-05-25T14:04:44.204382Z[0m [32m INFO[0m [1;32mapp::meili_client[0m[32m: [32mstop_meilisearch[0m
+    [2;3mat[0m src\meili_client.rs:105
+

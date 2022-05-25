@@ -63,12 +63,15 @@ async fn index_doc_file(dir_path: String) -> Result<(), String> {
     info!("index_doc_file: {}", dir_path);
     let file_paths = plat_dir(&dir_path)?;
     for file_path in file_paths.iter().rev() {
-        if file_path.is_file() && file_path.extension() == Some(std::ffi::OsStr::new("docx")) {
+        if file_path.is_file()
+            && (file_path.extension() == Some(std::ffi::OsStr::new("docx"))
+                || file_path.extension() == Some(std::ffi::OsStr::new("doc")))
+        {
             let mut docx = Docx::new(&file_path)?;
 
-            if !existed(&docx).await {
+            if !docx.get_name().starts_with("~$") && !existed(&docx).await {
                 docx.set_content()?;
-                info!("indexing: {:?}", docx);
+                info!("indexing: {}", docx.get_path());
                 CLIENT
                     .add_or_replace(&INDEX_NAME, &[docx], None)
                     .await
@@ -83,6 +86,9 @@ async fn index_doc_file(dir_path: String) -> Result<(), String> {
 ///扁平化文件夹
 fn plat_dir(dir: &str) -> Result<Vec<PathBuf>, String> {
     let dir_path = Path::new(&dir);
+    if dir_path.is_file() {
+        return Ok(vec![dir_path.to_path_buf()]);
+    }
     let dir_entry = read_dir(dir_path, true).map_err(union_err)?;
     let mut paths = disk_entry_recursive(dir_entry);
     paths.sort();
