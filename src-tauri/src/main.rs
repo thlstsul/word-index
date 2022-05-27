@@ -15,7 +15,9 @@ use structs::Docx;
 use tauri::api::dir::{read_dir, DiskEntry};
 use tauri::api::process::Command;
 use tauri::{Manager, WindowEvent};
+use time::{macros::format_description, UtcOffset};
 use tracing::info;
+use tracing_subscriber::fmt::time::OffsetTime;
 
 mod config;
 mod meili_client;
@@ -33,7 +35,17 @@ lazy_static! {
 fn main() {
     let file_appender = tracing_appender::rolling::never(".", "word-index.log");
     let (non_blocking, _guard) = tracing_appender::non_blocking(file_appender);
-    tracing_subscriber::fmt().with_writer(non_blocking).init();
+    let offset = UtcOffset::current_local_offset().expect("should get local offset!");
+    let timer = OffsetTime::new(
+        offset,
+        format_description!("[year]-[month]-[day] [hour]:[minute]:[second]"),
+    );
+    tracing_subscriber::fmt()
+        .with_writer(non_blocking)
+        .with_timer(timer)
+        .with_ansi(false)
+        .init();
+    
     tauri::Builder::default()
         .setup(|app| {
             let main_window = app.get_window("main").unwrap();
@@ -179,7 +191,7 @@ fn open_file(path: String) -> Result<(), String> {
 async fn existed(docx: &Docx) -> bool {
     let id = docx.get_id();
     let file_timestamp = docx.get_timestamp();
-    let exist_docxs = search_doc_file(id.to_string(), 0, 1).await;
+    let exist_docxs = search_doc_file(format!("\"{}\"", id), 0, 1).await;
     if let Ok(exist_docxs) = exist_docxs {
         for exist_docx in exist_docxs["results"].as_array().unwrap() {
             if exist_docx["id"] == id && exist_docx["timestamp"] == file_timestamp {

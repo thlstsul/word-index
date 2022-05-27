@@ -6,39 +6,46 @@
     size="large"
     @search="index"
   />
+
   <a-divider />
-  <a-button
+
+  <index-path
     type="primary"
     v-for="path in paths"
-    :key="path"
-    @click="() => reindex(path)"
+    :key="path.value"
+    :path="path.value"
+    :loaded="path.loaded"
     style="margin-bottom:10px;"
     block
-  >{{path}}</a-button>
+  ></index-path>
 </template>
 <script>
 import { ref, onMounted } from "vue";
-import { message } from 'ant-design-vue';
+import { message } from "ant-design-vue";
 import { invoke } from "@tauri-apps/api/tauri";
+import IndexPath from "./IndexPath";
 
 export default {
   name: "IndexPage",
+  components: {
+    IndexPath,
+  },
   setup() {
     const value = ref("");
     const paths = ref([]);
     const index = () => {
       save_path(value.value);
-      paths.value.push(value.value);
-      index_doc_file(value.value);
-    };
-    const reindex = (path) => {
-      index_doc_file(path);
+      paths.value.push({value: value.value, loaded: false});
     };
 
     onMounted(() => {
       get_paths()
         .then((res) => {
-          paths.value = res;
+          const pathsTmp = [];
+          for (const path of res) {
+            pathsTmp.push({value: path, loaded: true});
+          }
+          paths.value = pathsTmp;
         })
         .catch((err) => {
           message.info(err);
@@ -49,16 +56,9 @@ export default {
       value,
       paths,
       index,
-      reindex,
     };
   },
 };
-
-function index_doc_file(path) {
-  invoke("index_doc_file", { dirPath: path }).catch((e) => {
-    message.info(e);
-  });
-}
 
 function save_path(path) {
   invoke("save_path", { path }).catch((e) => {

@@ -28,3 +28,387 @@
   [2m2022-05-25T14:04:44.204382Z[0m [32m INFO[0m [1;32mapp::meili_client[0m[32m: [32mstop_meilisearch[0m
     [2;3mat[0m src\meili_client.rs:105
 
+2022-05-26T14:38:39.842473Z  INFO app: search_doc_file query: , offset: 0, limit: 5
+2022-05-26T14:38:39.842744Z  INFO app::meili_client: restart_meilisearch
+2022-05-26T14:38:40.214801Z  INFO app::meili_client: start_meilisearch: Start-Process -WindowStyle Hidden -FilePath meilisearch -ArgumentList "--db-path=E:\project\rust\word-index\src-tauri\data.ms --http-addr=localhost:7700 --master-key=thlstsul"
+2022-05-26T14:38:40.541785Z  INFO app::meili_client: search: 
+2022-05-26T14:45:37.594054Z  INFO app: Destroyed
+2022-05-26T14:45:37.594147Z  INFO app::meili_client: stop_meilisearch
+2022-05-26T14:48:50.150132Z  INFO app: Destroyed
+2022-05-26T14:48:50.150333Z  INFO app::meili_client: stop_meilisearch
+2022-05-26T14:49:12.706845Z  INFO app: search_doc_file query: , offset: 0, limit: 5
+2022-05-26T14:49:12.707159Z  INFO app::meili_client: restart_meilisearch
+2022-05-26T14:49:13.039817Z  INFO app::meili_client: start_meilisearch: Start-Process -WindowStyle Hidden -FilePath meilisearch -ArgumentList "--db-path=E:\project\rust\word-index\src-tauri\data.ms --http-addr=localhost:7700 --master-key=thlstsul"
+2022-05-26T14:49:13.353423Z  INFO app::meili_client: search: 
+2022-05-26T14:49:36.132685Z  INFO app: Destroyed
+2022-05-26T14:49:36.132760Z  INFO app::meili_client: stop_meilisearch
+2022-05-26T14:58:26.784776Z  INFO app: search_doc_file query: , offset: 0, limit: 5
+2022-05-26T14:58:26.785108Z  INFO app::meili_client: restart_meilisearch
+2022-05-26T14:58:27.154675Z  INFO app::meili_client: start_meilisearch: Start-Process -WindowStyle Hidden -FilePath meilisearch -ArgumentList "--db-path=E:\project\rust\word-index\src-tauri\data.ms --http-addr=localhost:7700 --master-key=thlstsul"
+2022-05-26T14:58:27.501087Z  INFO app::meili_client: search: 
+2022-05-26T14:58:49.409445Z  INFO app: search_doc_file query: , offset: 0, limit: 5
+2022-05-26T14:58:49.409494Z  INFO app::meili_client: search: 
+2022-05-26T14:59:01.275571Z  INFO app: search_doc_file query: , offset: 0, limit: 5
+2022-05-26T14:59:01.275611Z  INFO app::meili_client: search: 
+2022-05-26T14:59:11.063043Z  INFO app: Destroyed
+2022-05-26T14:59:11.063109Z  INFO app::meili_client: stop_meilisearch
+2022-05-26T15:24:24.959548Z  INFO app: search_doc_file query: , offset: 0, limit: 5
+2022-05-26T15:24:24.959711Z  INFO app::meili_client: restart_meilisearch
+2022-05-26T15:24:25.390073Z  INFO app::meili_client: start_meilisearch: Start-Process -WindowStyle Hidden -FilePath meilisearch -ArgumentList "--db-path=E:\project\rust\word-index\src-tauri\data.ms --http-addr=localhost:7700 --master-key=thlstsul"
+2022-05-26T15:24:25.743293Z  INFO app::meili_client: search: 
+2022-05-26T15:24:51.038145Z  INFO app: Destroyed
+2022-05-26T15:24:51.038199Z  INFO app::meili_client: stop_meilisearch
+00:19:09  INFO app: search_doc_file query: , offset: 0, limit: 5
+00:19:09  INFO app::meili_client: restart_meilisearch
+00:19:09  INFO app::meili_client: start_meilisearch: Start-Process -WindowStyle Hidden -FilePath meilisearch -ArgumentList "--db-path=E:\project\rust\word-index\src-tauri\data.ms --http-addr=localhost:7700 --master-key=thlstsul"
+00:19:10  INFO app::meili_client: search: 
+00:19:31  INFO app: Destroyed
+00:19:31  INFO app::meili_client: stop_meilisearch
+2022-05-27 00:21:42  INFO app: search_doc_file query: , offset: 0, limit: 5
+2022-05-27 00:21:42  INFO app::meili_client: restart_meilisearch
+2022-05-27 00:21:43  INFO app::meili_client: start_meilisearch: Start-Process -WindowStyle Hidden -FilePath meilisearch -ArgumentList "--db-path=E:\project\rust\word-index\src-tauri\data.ms --http-addr=localhost:7700 --master-key=thlstsul"
+2022-05-27 00:21:43  INFO app::meili_client: search: 
+2022-05-27 00:22:05  INFO app: Destroyed
+2022-05-27 00:22:05  INFO app::meili_client: stop_meilisearch
+2022-05-28 02:36:55  INFO app: get_paths
+2022-05-28 02:36:55  INFO app::config: get_configs: paths
+2022-05-28 02:36:55  INFO app::config: get_configs: {"paths":["E:\\tmp"]}
+2022-05-28 02:39:40  INFO app: get_paths
+2022-05-28 02:39:40  INFO app::config: get_configs: paths
+2022-05-28 02:39:40  INFO app::config: get_configs: {"paths":["E:\\tmp"]}
+2022-05-28 02:40:54  INFO app: get_paths
+2022-05-28 02:40:54  INFO app::config: get_configs: paths
+2022-05-28 02:40:54  INFO app::config: get_configs: {"paths":["E:\\tmp"]}
+2022-05-28 02:41:36  INFO app: get_paths
+2022-05-28 02:41:36  INFO app::config: get_configs: paths
+2022-05-28 02:41:36  INFO app::config: get_configs: {"paths":["E:\\tmp"]}
+2022-05-28 02:41:41  INFO app: index_doc_file: E:\tmp
+2022-05-28 02:41:41  INFO app: search_doc_file query: b0562ad02faef1af130b9c4eacfb0dfa, offset: 0, limit: 1
+2022-05-28 02:41:41  INFO app::meili_client: restart_meilisearch
+2022-05-28 02:41:42  INFO app::meili_client: start_meilisearch: Start-Process -WindowStyle Hidden -FilePath meilisearch -ArgumentList "--db-path=E:\project\rust\word-index\src-tauri\data.ms --http-addr=localhost:7700 --master-key=thlstsul"
+2022-05-28 02:41:42  INFO app::meili_client: search: b0562ad02faef1af130b9c4eacfb0dfa
+2022-05-28 02:41:43  INFO app: search_doc_file query: dcbf19a888116c9dc2a9cf36dae24bde, offset: 0, limit: 1
+2022-05-28 02:41:43  INFO app::meili_client: search: dcbf19a888116c9dc2a9cf36dae24bde
+2022-05-28 02:41:43  INFO app::structs: read_docx_file: E:\tmp\test\test\BR20210909001-关于优化集团账户信用等级、缴费周期、增加产品付费模式及企业宽带预付费的需求_设计文档.docx
+2022-05-28 02:41:44  INFO app: indexing: E:\tmp\test\test\BR20210909001-关于优化集团账户信用等级、缴费周期、增加产品付费模式及企业宽带预付费的需求_设计文档.docx
+2022-05-28 02:41:44  INFO app: search_doc_file query: 389d60571cc52175db4097230d5f42e1, offset: 0, limit: 1
+2022-05-28 02:41:44  INFO app::meili_client: search: 389d60571cc52175db4097230d5f42e1
+2022-05-28 02:41:44  INFO app: search_doc_file query: 16803b930ef71357c12c7d21c1a3a69a, offset: 0, limit: 1
+2022-05-28 02:41:44  INFO app::meili_client: search: 16803b930ef71357c12c7d21c1a3a69a
+2022-05-28 02:41:44  INFO app: search_doc_file query: ae3c54b358fc7d0c5d71e4fb74aaa14b, offset: 0, limit: 1
+2022-05-28 02:41:44  INFO app::meili_client: search: ae3c54b358fc7d0c5d71e4fb74aaa14b
+2022-05-28 02:41:44  INFO app: search_doc_file query: 83a77cf73906bcc907b6d41ba82b336a, offset: 0, limit: 1
+2022-05-28 02:41:44  INFO app::meili_client: search: 83a77cf73906bcc907b6d41ba82b336a
+2022-05-28 02:41:44  INFO app: search_doc_file query: 571b95a6f7f1917b877d1387c0f3c3d5, offset: 0, limit: 1
+2022-05-28 02:41:44  INFO app::meili_client: search: 571b95a6f7f1917b877d1387c0f3c3d5
+2022-05-28 02:41:44  INFO app: search_doc_file query: 978634ddfc298647196a1b2487aeb397, offset: 0, limit: 1
+2022-05-28 02:41:44  INFO app::meili_client: search: 978634ddfc298647196a1b2487aeb397
+2022-05-28 02:41:44  INFO app: search_doc_file query: 81e403be163bed73710fb4b7e8857e45, offset: 0, limit: 1
+2022-05-28 02:41:44  INFO app::meili_client: search: 81e403be163bed73710fb4b7e8857e45
+2022-05-28 02:41:55  INFO app: index_doc_file: E:\tmp
+2022-05-28 02:41:55  INFO app: search_doc_file query: b0562ad02faef1af130b9c4eacfb0dfa, offset: 0, limit: 1
+2022-05-28 02:41:55  INFO app::meili_client: search: b0562ad02faef1af130b9c4eacfb0dfa
+2022-05-28 02:41:55  INFO app: search_doc_file query: dcbf19a888116c9dc2a9cf36dae24bde, offset: 0, limit: 1
+2022-05-28 02:41:55  INFO app::meili_client: search: dcbf19a888116c9dc2a9cf36dae24bde
+2022-05-28 02:41:55  INFO app::structs: read_docx_file: E:\tmp\test\test\BR20210909001-关于优化集团账户信用等级、缴费周期、增加产品付费模式及企业宽带预付费的需求_设计文档.docx
+2022-05-28 02:41:56  INFO app: indexing: E:\tmp\test\test\BR20210909001-关于优化集团账户信用等级、缴费周期、增加产品付费模式及企业宽带预付费的需求_设计文档.docx
+2022-05-28 02:41:56  INFO app: search_doc_file query: 389d60571cc52175db4097230d5f42e1, offset: 0, limit: 1
+2022-05-28 02:41:56  INFO app::meili_client: search: 389d60571cc52175db4097230d5f42e1
+2022-05-28 02:41:56  INFO app: search_doc_file query: 16803b930ef71357c12c7d21c1a3a69a, offset: 0, limit: 1
+2022-05-28 02:41:56  INFO app::meili_client: search: 16803b930ef71357c12c7d21c1a3a69a
+2022-05-28 02:41:56  INFO app: search_doc_file query: ae3c54b358fc7d0c5d71e4fb74aaa14b, offset: 0, limit: 1
+2022-05-28 02:41:56  INFO app::meili_client: search: ae3c54b358fc7d0c5d71e4fb74aaa14b
+2022-05-28 02:41:56  INFO app: search_doc_file query: 83a77cf73906bcc907b6d41ba82b336a, offset: 0, limit: 1
+2022-05-28 02:41:56  INFO app::meili_client: search: 83a77cf73906bcc907b6d41ba82b336a
+2022-05-28 02:41:56  INFO app: search_doc_file query: 571b95a6f7f1917b877d1387c0f3c3d5, offset: 0, limit: 1
+2022-05-28 02:41:56  INFO app::meili_client: search: 571b95a6f7f1917b877d1387c0f3c3d5
+2022-05-28 02:41:56  INFO app: search_doc_file query: 978634ddfc298647196a1b2487aeb397, offset: 0, limit: 1
+2022-05-28 02:41:56  INFO app::meili_client: search: 978634ddfc298647196a1b2487aeb397
+2022-05-28 02:41:56  INFO app: search_doc_file query: 81e403be163bed73710fb4b7e8857e45, offset: 0, limit: 1
+2022-05-28 02:41:56  INFO app::meili_client: search: 81e403be163bed73710fb4b7e8857e45
+2022-05-28 02:41:56  INFO app: index_doc_file: E:\tmp
+2022-05-28 02:41:56  INFO app: search_doc_file query: b0562ad02faef1af130b9c4eacfb0dfa, offset: 0, limit: 1
+2022-05-28 02:41:56  INFO app::meili_client: search: b0562ad02faef1af130b9c4eacfb0dfa
+2022-05-28 02:41:56  INFO app: search_doc_file query: dcbf19a888116c9dc2a9cf36dae24bde, offset: 0, limit: 1
+2022-05-28 02:41:56  INFO app::meili_client: search: dcbf19a888116c9dc2a9cf36dae24bde
+2022-05-28 02:41:56  INFO app::structs: read_docx_file: E:\tmp\test\test\BR20210909001-关于优化集团账户信用等级、缴费周期、增加产品付费模式及企业宽带预付费的需求_设计文档.docx
+2022-05-28 02:41:57  INFO app: indexing: E:\tmp\test\test\BR20210909001-关于优化集团账户信用等级、缴费周期、增加产品付费模式及企业宽带预付费的需求_设计文档.docx
+2022-05-28 02:41:57  INFO app: search_doc_file query: 389d60571cc52175db4097230d5f42e1, offset: 0, limit: 1
+2022-05-28 02:41:57  INFO app::meili_client: search: 389d60571cc52175db4097230d5f42e1
+2022-05-28 02:41:57  INFO app: search_doc_file query: 16803b930ef71357c12c7d21c1a3a69a, offset: 0, limit: 1
+2022-05-28 02:41:57  INFO app::meili_client: search: 16803b930ef71357c12c7d21c1a3a69a
+2022-05-28 02:41:57  INFO app: search_doc_file query: ae3c54b358fc7d0c5d71e4fb74aaa14b, offset: 0, limit: 1
+2022-05-28 02:41:57  INFO app::meili_client: search: ae3c54b358fc7d0c5d71e4fb74aaa14b
+2022-05-28 02:41:57  INFO app: search_doc_file query: 83a77cf73906bcc907b6d41ba82b336a, offset: 0, limit: 1
+2022-05-28 02:41:57  INFO app::meili_client: search: 83a77cf73906bcc907b6d41ba82b336a
+2022-05-28 02:41:57  INFO app: search_doc_file query: 571b95a6f7f1917b877d1387c0f3c3d5, offset: 0, limit: 1
+2022-05-28 02:41:57  INFO app::meili_client: search: 571b95a6f7f1917b877d1387c0f3c3d5
+2022-05-28 02:41:57  INFO app: search_doc_file query: 978634ddfc298647196a1b2487aeb397, offset: 0, limit: 1
+2022-05-28 02:41:57  INFO app::meili_client: search: 978634ddfc298647196a1b2487aeb397
+2022-05-28 02:41:57  INFO app: search_doc_file query: 81e403be163bed73710fb4b7e8857e45, offset: 0, limit: 1
+2022-05-28 02:41:57  INFO app::meili_client: search: 81e403be163bed73710fb4b7e8857e45
+2022-05-28 02:41:57  INFO app: index_doc_file: E:\tmp
+2022-05-28 02:41:57  INFO app: search_doc_file query: b0562ad02faef1af130b9c4eacfb0dfa, offset: 0, limit: 1
+2022-05-28 02:41:57  INFO app::meili_client: search: b0562ad02faef1af130b9c4eacfb0dfa
+2022-05-28 02:41:57  INFO app: search_doc_file query: dcbf19a888116c9dc2a9cf36dae24bde, offset: 0, limit: 1
+2022-05-28 02:41:57  INFO app::meili_client: search: dcbf19a888116c9dc2a9cf36dae24bde
+2022-05-28 02:41:57  INFO app::structs: read_docx_file: E:\tmp\test\test\BR20210909001-关于优化集团账户信用等级、缴费周期、增加产品付费模式及企业宽带预付费的需求_设计文档.docx
+2022-05-28 02:41:57  INFO app: indexing: E:\tmp\test\test\BR20210909001-关于优化集团账户信用等级、缴费周期、增加产品付费模式及企业宽带预付费的需求_设计文档.docx
+2022-05-28 02:41:57  INFO app: search_doc_file query: 389d60571cc52175db4097230d5f42e1, offset: 0, limit: 1
+2022-05-28 02:41:57  INFO app::meili_client: search: 389d60571cc52175db4097230d5f42e1
+2022-05-28 02:41:57  INFO app: search_doc_file query: 16803b930ef71357c12c7d21c1a3a69a, offset: 0, limit: 1
+2022-05-28 02:41:57  INFO app::meili_client: search: 16803b930ef71357c12c7d21c1a3a69a
+2022-05-28 02:41:57  INFO app: search_doc_file query: ae3c54b358fc7d0c5d71e4fb74aaa14b, offset: 0, limit: 1
+2022-05-28 02:41:57  INFO app::meili_client: search: ae3c54b358fc7d0c5d71e4fb74aaa14b
+2022-05-28 02:41:57  INFO app: search_doc_file query: 83a77cf73906bcc907b6d41ba82b336a, offset: 0, limit: 1
+2022-05-28 02:41:57  INFO app::meili_client: search: 83a77cf73906bcc907b6d41ba82b336a
+2022-05-28 02:41:57  INFO app: search_doc_file query: 571b95a6f7f1917b877d1387c0f3c3d5, offset: 0, limit: 1
+2022-05-28 02:41:57  INFO app::meili_client: search: 571b95a6f7f1917b877d1387c0f3c3d5
+2022-05-28 02:41:57  INFO app: search_doc_file query: 978634ddfc298647196a1b2487aeb397, offset: 0, limit: 1
+2022-05-28 02:41:57  INFO app::meili_client: search: 978634ddfc298647196a1b2487aeb397
+2022-05-28 02:41:57  INFO app: search_doc_file query: 81e403be163bed73710fb4b7e8857e45, offset: 0, limit: 1
+2022-05-28 02:41:57  INFO app::meili_client: search: 81e403be163bed73710fb4b7e8857e45
+2022-05-28 02:41:58  INFO app: index_doc_file: E:\tmp
+2022-05-28 02:41:58  INFO app: search_doc_file query: b0562ad02faef1af130b9c4eacfb0dfa, offset: 0, limit: 1
+2022-05-28 02:41:58  INFO app::meili_client: search: b0562ad02faef1af130b9c4eacfb0dfa
+2022-05-28 02:41:58  INFO app: search_doc_file query: dcbf19a888116c9dc2a9cf36dae24bde, offset: 0, limit: 1
+2022-05-28 02:41:58  INFO app::meili_client: search: dcbf19a888116c9dc2a9cf36dae24bde
+2022-05-28 02:41:58  INFO app::structs: read_docx_file: E:\tmp\test\test\BR20210909001-关于优化集团账户信用等级、缴费周期、增加产品付费模式及企业宽带预付费的需求_设计文档.docx
+2022-05-28 02:41:58  INFO app: indexing: E:\tmp\test\test\BR20210909001-关于优化集团账户信用等级、缴费周期、增加产品付费模式及企业宽带预付费的需求_设计文档.docx
+2022-05-28 02:41:58  INFO app: search_doc_file query: 389d60571cc52175db4097230d5f42e1, offset: 0, limit: 1
+2022-05-28 02:41:58  INFO app::meili_client: search: 389d60571cc52175db4097230d5f42e1
+2022-05-28 02:41:58  INFO app: search_doc_file query: 16803b930ef71357c12c7d21c1a3a69a, offset: 0, limit: 1
+2022-05-28 02:41:58  INFO app::meili_client: search: 16803b930ef71357c12c7d21c1a3a69a
+2022-05-28 02:41:58  INFO app: search_doc_file query: ae3c54b358fc7d0c5d71e4fb74aaa14b, offset: 0, limit: 1
+2022-05-28 02:41:58  INFO app::meili_client: search: ae3c54b358fc7d0c5d71e4fb74aaa14b
+2022-05-28 02:41:58  INFO app: search_doc_file query: 83a77cf73906bcc907b6d41ba82b336a, offset: 0, limit: 1
+2022-05-28 02:41:58  INFO app::meili_client: search: 83a77cf73906bcc907b6d41ba82b336a
+2022-05-28 02:41:58  INFO app: search_doc_file query: 571b95a6f7f1917b877d1387c0f3c3d5, offset: 0, limit: 1
+2022-05-28 02:41:58  INFO app::meili_client: search: 571b95a6f7f1917b877d1387c0f3c3d5
+2022-05-28 02:41:58  INFO app: search_doc_file query: 978634ddfc298647196a1b2487aeb397, offset: 0, limit: 1
+2022-05-28 02:41:58  INFO app::meili_client: search: 978634ddfc298647196a1b2487aeb397
+2022-05-28 02:41:58  INFO app: search_doc_file query: 81e403be163bed73710fb4b7e8857e45, offset: 0, limit: 1
+2022-05-28 02:41:58  INFO app::meili_client: search: 81e403be163bed73710fb4b7e8857e45
+2022-05-28 02:41:59  INFO app: index_doc_file: E:\tmp
+2022-05-28 02:41:59  INFO app: search_doc_file query: b0562ad02faef1af130b9c4eacfb0dfa, offset: 0, limit: 1
+2022-05-28 02:41:59  INFO app::meili_client: search: b0562ad02faef1af130b9c4eacfb0dfa
+2022-05-28 02:41:59  INFO app: search_doc_file query: dcbf19a888116c9dc2a9cf36dae24bde, offset: 0, limit: 1
+2022-05-28 02:41:59  INFO app::meili_client: search: dcbf19a888116c9dc2a9cf36dae24bde
+2022-05-28 02:41:59  INFO app::structs: read_docx_file: E:\tmp\test\test\BR20210909001-关于优化集团账户信用等级、缴费周期、增加产品付费模式及企业宽带预付费的需求_设计文档.docx
+2022-05-28 02:41:59  INFO app: indexing: E:\tmp\test\test\BR20210909001-关于优化集团账户信用等级、缴费周期、增加产品付费模式及企业宽带预付费的需求_设计文档.docx
+2022-05-28 02:41:59  INFO app: search_doc_file query: 389d60571cc52175db4097230d5f42e1, offset: 0, limit: 1
+2022-05-28 02:41:59  INFO app::meili_client: search: 389d60571cc52175db4097230d5f42e1
+2022-05-28 02:41:59  INFO app: search_doc_file query: 16803b930ef71357c12c7d21c1a3a69a, offset: 0, limit: 1
+2022-05-28 02:41:59  INFO app::meili_client: search: 16803b930ef71357c12c7d21c1a3a69a
+2022-05-28 02:41:59  INFO app: search_doc_file query: ae3c54b358fc7d0c5d71e4fb74aaa14b, offset: 0, limit: 1
+2022-05-28 02:41:59  INFO app::meili_client: search: ae3c54b358fc7d0c5d71e4fb74aaa14b
+2022-05-28 02:41:59  INFO app: search_doc_file query: 83a77cf73906bcc907b6d41ba82b336a, offset: 0, limit: 1
+2022-05-28 02:41:59  INFO app::meili_client: search: 83a77cf73906bcc907b6d41ba82b336a
+2022-05-28 02:41:59  INFO app: search_doc_file query: 571b95a6f7f1917b877d1387c0f3c3d5, offset: 0, limit: 1
+2022-05-28 02:41:59  INFO app::meili_client: search: 571b95a6f7f1917b877d1387c0f3c3d5
+2022-05-28 02:41:59  INFO app: search_doc_file query: 978634ddfc298647196a1b2487aeb397, offset: 0, limit: 1
+2022-05-28 02:41:59  INFO app::meili_client: search: 978634ddfc298647196a1b2487aeb397
+2022-05-28 02:41:59  INFO app: search_doc_file query: 81e403be163bed73710fb4b7e8857e45, offset: 0, limit: 1
+2022-05-28 02:41:59  INFO app::meili_client: search: 81e403be163bed73710fb4b7e8857e45
+2022-05-28 02:42:00  INFO app: index_doc_file: E:\tmp
+2022-05-28 02:42:00  INFO app: search_doc_file query: b0562ad02faef1af130b9c4eacfb0dfa, offset: 0, limit: 1
+2022-05-28 02:42:00  INFO app::meili_client: search: b0562ad02faef1af130b9c4eacfb0dfa
+2022-05-28 02:42:00  INFO app: search_doc_file query: dcbf19a888116c9dc2a9cf36dae24bde, offset: 0, limit: 1
+2022-05-28 02:42:00  INFO app::meili_client: search: dcbf19a888116c9dc2a9cf36dae24bde
+2022-05-28 02:42:00  INFO app::structs: read_docx_file: E:\tmp\test\test\BR20210909001-关于优化集团账户信用等级、缴费周期、增加产品付费模式及企业宽带预付费的需求_设计文档.docx
+2022-05-28 02:42:00  INFO app: indexing: E:\tmp\test\test\BR20210909001-关于优化集团账户信用等级、缴费周期、增加产品付费模式及企业宽带预付费的需求_设计文档.docx
+2022-05-28 02:42:00  INFO app: search_doc_file query: 389d60571cc52175db4097230d5f42e1, offset: 0, limit: 1
+2022-05-28 02:42:00  INFO app::meili_client: search: 389d60571cc52175db4097230d5f42e1
+2022-05-28 02:42:00  INFO app: search_doc_file query: 16803b930ef71357c12c7d21c1a3a69a, offset: 0, limit: 1
+2022-05-28 02:42:00  INFO app::meili_client: search: 16803b930ef71357c12c7d21c1a3a69a
+2022-05-28 02:42:00  INFO app: search_doc_file query: ae3c54b358fc7d0c5d71e4fb74aaa14b, offset: 0, limit: 1
+2022-05-28 02:42:00  INFO app::meili_client: search: ae3c54b358fc7d0c5d71e4fb74aaa14b
+2022-05-28 02:42:00  INFO app: search_doc_file query: 83a77cf73906bcc907b6d41ba82b336a, offset: 0, limit: 1
+2022-05-28 02:42:00  INFO app::meili_client: search: 83a77cf73906bcc907b6d41ba82b336a
+2022-05-28 02:42:00  INFO app: search_doc_file query: 571b95a6f7f1917b877d1387c0f3c3d5, offset: 0, limit: 1
+2022-05-28 02:42:00  INFO app::meili_client: search: 571b95a6f7f1917b877d1387c0f3c3d5
+2022-05-28 02:42:00  INFO app: search_doc_file query: 978634ddfc298647196a1b2487aeb397, offset: 0, limit: 1
+2022-05-28 02:42:00  INFO app::meili_client: search: 978634ddfc298647196a1b2487aeb397
+2022-05-28 02:42:00  INFO app: search_doc_file query: 81e403be163bed73710fb4b7e8857e45, offset: 0, limit: 1
+2022-05-28 02:42:00  INFO app::meili_client: search: 81e403be163bed73710fb4b7e8857e45
+2022-05-28 02:42:01  INFO app: index_doc_file: E:\tmp
+2022-05-28 02:42:01  INFO app: search_doc_file query: b0562ad02faef1af130b9c4eacfb0dfa, offset: 0, limit: 1
+2022-05-28 02:42:01  INFO app::meili_client: search: b0562ad02faef1af130b9c4eacfb0dfa
+2022-05-28 02:42:01  INFO app: search_doc_file query: dcbf19a888116c9dc2a9cf36dae24bde, offset: 0, limit: 1
+2022-05-28 02:42:01  INFO app::meili_client: search: dcbf19a888116c9dc2a9cf36dae24bde
+2022-05-28 02:42:01  INFO app::structs: read_docx_file: E:\tmp\test\test\BR20210909001-关于优化集团账户信用等级、缴费周期、增加产品付费模式及企业宽带预付费的需求_设计文档.docx
+2022-05-28 02:42:01  INFO app: indexing: E:\tmp\test\test\BR20210909001-关于优化集团账户信用等级、缴费周期、增加产品付费模式及企业宽带预付费的需求_设计文档.docx
+2022-05-28 02:42:01  INFO app: search_doc_file query: 389d60571cc52175db4097230d5f42e1, offset: 0, limit: 1
+2022-05-28 02:42:01  INFO app::meili_client: search: 389d60571cc52175db4097230d5f42e1
+2022-05-28 02:42:01  INFO app: search_doc_file query: 16803b930ef71357c12c7d21c1a3a69a, offset: 0, limit: 1
+2022-05-28 02:42:01  INFO app::meili_client: search: 16803b930ef71357c12c7d21c1a3a69a
+2022-05-28 02:42:01  INFO app: search_doc_file query: ae3c54b358fc7d0c5d71e4fb74aaa14b, offset: 0, limit: 1
+2022-05-28 02:42:01  INFO app::meili_client: search: ae3c54b358fc7d0c5d71e4fb74aaa14b
+2022-05-28 02:42:01  INFO app: search_doc_file query: 83a77cf73906bcc907b6d41ba82b336a, offset: 0, limit: 1
+2022-05-28 02:42:01  INFO app::meili_client: search: 83a77cf73906bcc907b6d41ba82b336a
+2022-05-28 02:42:01  INFO app: search_doc_file query: 571b95a6f7f1917b877d1387c0f3c3d5, offset: 0, limit: 1
+2022-05-28 02:42:01  INFO app::meili_client: search: 571b95a6f7f1917b877d1387c0f3c3d5
+2022-05-28 02:42:01  INFO app: search_doc_file query: 978634ddfc298647196a1b2487aeb397, offset: 0, limit: 1
+2022-05-28 02:42:01  INFO app::meili_client: search: 978634ddfc298647196a1b2487aeb397
+2022-05-28 02:42:01  INFO app: search_doc_file query: 81e403be163bed73710fb4b7e8857e45, offset: 0, limit: 1
+2022-05-28 02:42:01  INFO app::meili_client: search: 81e403be163bed73710fb4b7e8857e45
+2022-05-28 02:42:02  INFO app: index_doc_file: E:\tmp
+2022-05-28 02:42:02  INFO app: search_doc_file query: b0562ad02faef1af130b9c4eacfb0dfa, offset: 0, limit: 1
+2022-05-28 02:42:02  INFO app::meili_client: search: b0562ad02faef1af130b9c4eacfb0dfa
+2022-05-28 02:42:02  INFO app: search_doc_file query: dcbf19a888116c9dc2a9cf36dae24bde, offset: 0, limit: 1
+2022-05-28 02:42:02  INFO app::meili_client: search: dcbf19a888116c9dc2a9cf36dae24bde
+2022-05-28 02:42:02  INFO app::structs: read_docx_file: E:\tmp\test\test\BR20210909001-关于优化集团账户信用等级、缴费周期、增加产品付费模式及企业宽带预付费的需求_设计文档.docx
+2022-05-28 02:42:02  INFO app: index_doc_file: E:\tmp
+2022-05-28 02:42:02  INFO app: search_doc_file query: b0562ad02faef1af130b9c4eacfb0dfa, offset: 0, limit: 1
+2022-05-28 02:42:02  INFO app::meili_client: search: b0562ad02faef1af130b9c4eacfb0dfa
+2022-05-28 02:42:02  INFO app: search_doc_file query: dcbf19a888116c9dc2a9cf36dae24bde, offset: 0, limit: 1
+2022-05-28 02:42:02  INFO app::meili_client: search: dcbf19a888116c9dc2a9cf36dae24bde
+2022-05-28 02:42:02  INFO app::structs: read_docx_file: E:\tmp\test\test\BR20210909001-关于优化集团账户信用等级、缴费周期、增加产品付费模式及企业宽带预付费的需求_设计文档.docx
+2022-05-28 02:42:02  INFO app: indexing: E:\tmp\test\test\BR20210909001-关于优化集团账户信用等级、缴费周期、增加产品付费模式及企业宽带预付费的需求_设计文档.docx
+2022-05-28 02:42:02  INFO app: search_doc_file query: 389d60571cc52175db4097230d5f42e1, offset: 0, limit: 1
+2022-05-28 02:42:02  INFO app::meili_client: search: 389d60571cc52175db4097230d5f42e1
+2022-05-28 02:42:02  INFO app: search_doc_file query: 16803b930ef71357c12c7d21c1a3a69a, offset: 0, limit: 1
+2022-05-28 02:42:02  INFO app::meili_client: search: 16803b930ef71357c12c7d21c1a3a69a
+2022-05-28 02:42:02  INFO app: search_doc_file query: ae3c54b358fc7d0c5d71e4fb74aaa14b, offset: 0, limit: 1
+2022-05-28 02:42:02  INFO app::meili_client: search: ae3c54b358fc7d0c5d71e4fb74aaa14b
+2022-05-28 02:42:02  INFO app: search_doc_file query: 83a77cf73906bcc907b6d41ba82b336a, offset: 0, limit: 1
+2022-05-28 02:42:02  INFO app::meili_client: search: 83a77cf73906bcc907b6d41ba82b336a
+2022-05-28 02:42:02  INFO app: search_doc_file query: 571b95a6f7f1917b877d1387c0f3c3d5, offset: 0, limit: 1
+2022-05-28 02:42:02  INFO app::meili_client: search: 571b95a6f7f1917b877d1387c0f3c3d5
+2022-05-28 02:42:02  INFO app: search_doc_file query: 978634ddfc298647196a1b2487aeb397, offset: 0, limit: 1
+2022-05-28 02:42:02  INFO app::meili_client: search: 978634ddfc298647196a1b2487aeb397
+2022-05-28 02:42:02  INFO app: search_doc_file query: 81e403be163bed73710fb4b7e8857e45, offset: 0, limit: 1
+2022-05-28 02:42:02  INFO app::meili_client: search: 81e403be163bed73710fb4b7e8857e45
+2022-05-28 02:42:02  INFO app: indexing: E:\tmp\test\test\BR20210909001-关于优化集团账户信用等级、缴费周期、增加产品付费模式及企业宽带预付费的需求_设计文档.docx
+2022-05-28 02:42:02  INFO app: search_doc_file query: 389d60571cc52175db4097230d5f42e1, offset: 0, limit: 1
+2022-05-28 02:42:02  INFO app::meili_client: search: 389d60571cc52175db4097230d5f42e1
+2022-05-28 02:42:02  INFO app: search_doc_file query: 16803b930ef71357c12c7d21c1a3a69a, offset: 0, limit: 1
+2022-05-28 02:42:02  INFO app::meili_client: search: 16803b930ef71357c12c7d21c1a3a69a
+2022-05-28 02:42:02  INFO app: search_doc_file query: ae3c54b358fc7d0c5d71e4fb74aaa14b, offset: 0, limit: 1
+2022-05-28 02:42:02  INFO app::meili_client: search: ae3c54b358fc7d0c5d71e4fb74aaa14b
+2022-05-28 02:42:02  INFO app: search_doc_file query: 83a77cf73906bcc907b6d41ba82b336a, offset: 0, limit: 1
+2022-05-28 02:42:02  INFO app::meili_client: search: 83a77cf73906bcc907b6d41ba82b336a
+2022-05-28 02:42:02  INFO app: search_doc_file query: 571b95a6f7f1917b877d1387c0f3c3d5, offset: 0, limit: 1
+2022-05-28 02:42:02  INFO app::meili_client: search: 571b95a6f7f1917b877d1387c0f3c3d5
+2022-05-28 02:42:02  INFO app: search_doc_file query: 978634ddfc298647196a1b2487aeb397, offset: 0, limit: 1
+2022-05-28 02:42:02  INFO app::meili_client: search: 978634ddfc298647196a1b2487aeb397
+2022-05-28 02:42:02  INFO app: search_doc_file query: 81e403be163bed73710fb4b7e8857e45, offset: 0, limit: 1
+2022-05-28 02:42:02  INFO app::meili_client: search: 81e403be163bed73710fb4b7e8857e45
+2022-05-28 02:43:31  INFO app: index_doc_file: E:\tmp
+2022-05-28 02:43:31  INFO app: search_doc_file query: b0562ad02faef1af130b9c4eacfb0dfa, offset: 0, limit: 1
+2022-05-28 02:43:31  INFO app::meili_client: search: b0562ad02faef1af130b9c4eacfb0dfa
+2022-05-28 02:43:31  INFO app: search_doc_file query: dcbf19a888116c9dc2a9cf36dae24bde, offset: 0, limit: 1
+2022-05-28 02:43:31  INFO app::meili_client: search: dcbf19a888116c9dc2a9cf36dae24bde
+2022-05-28 02:43:31  INFO app: search_doc_file query: 389d60571cc52175db4097230d5f42e1, offset: 0, limit: 1
+2022-05-28 02:43:31  INFO app::meili_client: search: 389d60571cc52175db4097230d5f42e1
+2022-05-28 02:43:31  INFO app: search_doc_file query: 16803b930ef71357c12c7d21c1a3a69a, offset: 0, limit: 1
+2022-05-28 02:43:31  INFO app::meili_client: search: 16803b930ef71357c12c7d21c1a3a69a
+2022-05-28 02:43:31  INFO app: search_doc_file query: ae3c54b358fc7d0c5d71e4fb74aaa14b, offset: 0, limit: 1
+2022-05-28 02:43:31  INFO app::meili_client: search: ae3c54b358fc7d0c5d71e4fb74aaa14b
+2022-05-28 02:43:31  INFO app: search_doc_file query: 83a77cf73906bcc907b6d41ba82b336a, offset: 0, limit: 1
+2022-05-28 02:43:31  INFO app::meili_client: search: 83a77cf73906bcc907b6d41ba82b336a
+2022-05-28 02:43:31  INFO app: search_doc_file query: 571b95a6f7f1917b877d1387c0f3c3d5, offset: 0, limit: 1
+2022-05-28 02:43:31  INFO app::meili_client: search: 571b95a6f7f1917b877d1387c0f3c3d5
+2022-05-28 02:43:31  INFO app: search_doc_file query: 978634ddfc298647196a1b2487aeb397, offset: 0, limit: 1
+2022-05-28 02:43:31  INFO app::meili_client: search: 978634ddfc298647196a1b2487aeb397
+2022-05-28 02:43:31  INFO app: search_doc_file query: 81e403be163bed73710fb4b7e8857e45, offset: 0, limit: 1
+2022-05-28 02:43:31  INFO app::meili_client: search: 81e403be163bed73710fb4b7e8857e45
+2022-05-28 02:44:51  INFO app: index_doc_file: E:\tmp
+2022-05-28 02:44:51  INFO app: search_doc_file query: b0562ad02faef1af130b9c4eacfb0dfa, offset: 0, limit: 1
+2022-05-28 02:44:51  INFO app::meili_client: search: b0562ad02faef1af130b9c4eacfb0dfa
+2022-05-28 02:44:51  INFO app: search_doc_file query: dcbf19a888116c9dc2a9cf36dae24bde, offset: 0, limit: 1
+2022-05-28 02:44:51  INFO app::meili_client: search: dcbf19a888116c9dc2a9cf36dae24bde
+2022-05-28 02:44:51  INFO app: search_doc_file query: 389d60571cc52175db4097230d5f42e1, offset: 0, limit: 1
+2022-05-28 02:44:51  INFO app::meili_client: search: 389d60571cc52175db4097230d5f42e1
+2022-05-28 02:44:51  INFO app: search_doc_file query: 16803b930ef71357c12c7d21c1a3a69a, offset: 0, limit: 1
+2022-05-28 02:44:51  INFO app::meili_client: search: 16803b930ef71357c12c7d21c1a3a69a
+2022-05-28 02:44:51  INFO app: search_doc_file query: ae3c54b358fc7d0c5d71e4fb74aaa14b, offset: 0, limit: 1
+2022-05-28 02:44:51  INFO app::meili_client: search: ae3c54b358fc7d0c5d71e4fb74aaa14b
+2022-05-28 02:44:51  INFO app: search_doc_file query: 83a77cf73906bcc907b6d41ba82b336a, offset: 0, limit: 1
+2022-05-28 02:44:51  INFO app::meili_client: search: 83a77cf73906bcc907b6d41ba82b336a
+2022-05-28 02:44:51  INFO app: search_doc_file query: 571b95a6f7f1917b877d1387c0f3c3d5, offset: 0, limit: 1
+2022-05-28 02:44:51  INFO app::meili_client: search: 571b95a6f7f1917b877d1387c0f3c3d5
+2022-05-28 02:44:51  INFO app: search_doc_file query: 978634ddfc298647196a1b2487aeb397, offset: 0, limit: 1
+2022-05-28 02:44:51  INFO app::meili_client: search: 978634ddfc298647196a1b2487aeb397
+2022-05-28 02:44:51  INFO app: search_doc_file query: 81e403be163bed73710fb4b7e8857e45, offset: 0, limit: 1
+2022-05-28 02:44:51  INFO app::meili_client: search: 81e403be163bed73710fb4b7e8857e45
+2022-05-28 02:46:26  INFO app: index_doc_file: E:\tmp
+2022-05-28 02:46:26  INFO app: search_doc_file query: b0562ad02faef1af130b9c4eacfb0dfa, offset: 0, limit: 1
+2022-05-28 02:46:26  INFO app::meili_client: search: b0562ad02faef1af130b9c4eacfb0dfa
+2022-05-28 02:46:26  INFO app: search_doc_file query: dcbf19a888116c9dc2a9cf36dae24bde, offset: 0, limit: 1
+2022-05-28 02:46:26  INFO app::meili_client: search: dcbf19a888116c9dc2a9cf36dae24bde
+2022-05-28 02:46:26  INFO app: search_doc_file query: 389d60571cc52175db4097230d5f42e1, offset: 0, limit: 1
+2022-05-28 02:46:26  INFO app::meili_client: search: 389d60571cc52175db4097230d5f42e1
+2022-05-28 02:46:26  INFO app: search_doc_file query: 16803b930ef71357c12c7d21c1a3a69a, offset: 0, limit: 1
+2022-05-28 02:46:26  INFO app::meili_client: search: 16803b930ef71357c12c7d21c1a3a69a
+2022-05-28 02:46:26  INFO app: search_doc_file query: ae3c54b358fc7d0c5d71e4fb74aaa14b, offset: 0, limit: 1
+2022-05-28 02:46:26  INFO app::meili_client: search: ae3c54b358fc7d0c5d71e4fb74aaa14b
+2022-05-28 02:46:26  INFO app: search_doc_file query: 83a77cf73906bcc907b6d41ba82b336a, offset: 0, limit: 1
+2022-05-28 02:46:26  INFO app::meili_client: search: 83a77cf73906bcc907b6d41ba82b336a
+2022-05-28 02:46:26  INFO app: search_doc_file query: 571b95a6f7f1917b877d1387c0f3c3d5, offset: 0, limit: 1
+2022-05-28 02:46:26  INFO app::meili_client: search: 571b95a6f7f1917b877d1387c0f3c3d5
+2022-05-28 02:46:26  INFO app: search_doc_file query: 978634ddfc298647196a1b2487aeb397, offset: 0, limit: 1
+2022-05-28 02:46:26  INFO app::meili_client: search: 978634ddfc298647196a1b2487aeb397
+2022-05-28 02:46:26  INFO app: search_doc_file query: 81e403be163bed73710fb4b7e8857e45, offset: 0, limit: 1
+2022-05-28 02:46:26  INFO app::meili_client: search: 81e403be163bed73710fb4b7e8857e45
+2022-05-28 02:48:17  INFO app: get_paths
+2022-05-28 02:48:17  INFO app::config: get_configs: paths
+2022-05-28 02:48:17  INFO app::config: get_configs: {"paths":["E:\\tmp"]}
+2022-05-28 02:48:35  INFO app: Destroyed
+2022-05-28 02:48:35  INFO app::meili_client: stop_meilisearch
+2022-05-28 02:56:28  INFO app: get_paths
+2022-05-28 02:56:28  INFO app::config: get_configs: paths
+2022-05-28 02:56:28  INFO app::config: get_configs: {"paths":["E:\\tmp"]}
+2022-05-28 02:56:30  INFO app: index_doc_file: E:\tmp
+2022-05-28 02:56:30  INFO app: search_doc_file query: "b0562ad02faef1af130b9c4eacfb0dfa", offset: 0, limit: 1
+2022-05-28 02:56:30  INFO app::meili_client: restart_meilisearch
+2022-05-28 02:56:31  INFO app::meili_client: start_meilisearch: Start-Process -WindowStyle Hidden -FilePath meilisearch -ArgumentList "--db-path=E:\project\rust\word-index\src-tauri\data.ms --http-addr=localhost:7700 --master-key=thlstsul"
+2022-05-28 02:56:31  INFO app::meili_client: search: "b0562ad02faef1af130b9c4eacfb0dfa"
+2022-05-28 02:56:32  INFO app: search_doc_file query: "dcbf19a888116c9dc2a9cf36dae24bde", offset: 0, limit: 1
+2022-05-28 02:56:32  INFO app::meili_client: search: "dcbf19a888116c9dc2a9cf36dae24bde"
+2022-05-28 02:56:32  INFO app: search_doc_file query: "389d60571cc52175db4097230d5f42e1", offset: 0, limit: 1
+2022-05-28 02:56:32  INFO app::meili_client: search: "389d60571cc52175db4097230d5f42e1"
+2022-05-28 02:56:32  INFO app: search_doc_file query: "16803b930ef71357c12c7d21c1a3a69a", offset: 0, limit: 1
+2022-05-28 02:56:32  INFO app::meili_client: search: "16803b930ef71357c12c7d21c1a3a69a"
+2022-05-28 02:56:32  INFO app: search_doc_file query: "ae3c54b358fc7d0c5d71e4fb74aaa14b", offset: 0, limit: 1
+2022-05-28 02:56:32  INFO app::meili_client: search: "ae3c54b358fc7d0c5d71e4fb74aaa14b"
+2022-05-28 02:56:32  INFO app: search_doc_file query: "83a77cf73906bcc907b6d41ba82b336a", offset: 0, limit: 1
+2022-05-28 02:56:32  INFO app::meili_client: search: "83a77cf73906bcc907b6d41ba82b336a"
+2022-05-28 02:56:32  INFO app: search_doc_file query: "571b95a6f7f1917b877d1387c0f3c3d5", offset: 0, limit: 1
+2022-05-28 02:56:32  INFO app::meili_client: search: "571b95a6f7f1917b877d1387c0f3c3d5"
+2022-05-28 02:56:32  INFO app: search_doc_file query: "978634ddfc298647196a1b2487aeb397", offset: 0, limit: 1
+2022-05-28 02:56:32  INFO app::meili_client: search: "978634ddfc298647196a1b2487aeb397"
+2022-05-28 02:56:32  INFO app: search_doc_file query: "81e403be163bed73710fb4b7e8857e45", offset: 0, limit: 1
+2022-05-28 02:56:32  INFO app::meili_client: search: "81e403be163bed73710fb4b7e8857e45"
+2022-05-28 02:57:00  INFO app: Destroyed
+2022-05-28 02:57:00  INFO app::meili_client: stop_meilisearch
+2022-05-28 02:58:08  INFO app: get_paths
+2022-05-28 02:58:08  INFO app::config: get_configs: paths
+2022-05-28 02:58:08  INFO app::config: get_configs: {"paths":["E:\\tmp"]}
+2022-05-28 02:58:18  INFO app: save_path: E:\tmp
+2022-05-28 02:58:18  INFO app::config: get_configs: paths
+2022-05-28 02:58:18  INFO app: index_doc_file: E:\tmp
+2022-05-28 02:58:18  INFO app::config: get_configs: {"paths":["E:\\tmp"]}
+2022-05-28 02:58:18  INFO app::config: save_config: paths->["E:\\tmp","E:\\tmp"]
+2022-05-28 02:58:18  INFO app: search_doc_file query: "b0562ad02faef1af130b9c4eacfb0dfa", offset: 0, limit: 1
+2022-05-28 02:58:18  INFO app::meili_client: restart_meilisearch
+2022-05-28 02:58:18  INFO app::meili_client: start_meilisearch: Start-Process -WindowStyle Hidden -FilePath meilisearch -ArgumentList "--db-path=E:\project\rust\word-index\src-tauri\data.ms --http-addr=localhost:7700 --master-key=thlstsul"
+2022-05-28 02:58:19  INFO app::meili_client: search: "b0562ad02faef1af130b9c4eacfb0dfa"
+2022-05-28 02:58:19  INFO app: search_doc_file query: "dcbf19a888116c9dc2a9cf36dae24bde", offset: 0, limit: 1
+2022-05-28 02:58:19  INFO app::meili_client: search: "dcbf19a888116c9dc2a9cf36dae24bde"
+2022-05-28 02:58:19  INFO app: search_doc_file query: "389d60571cc52175db4097230d5f42e1", offset: 0, limit: 1
+2022-05-28 02:58:19  INFO app::meili_client: search: "389d60571cc52175db4097230d5f42e1"
+2022-05-28 02:58:19  INFO app: search_doc_file query: "16803b930ef71357c12c7d21c1a3a69a", offset: 0, limit: 1
+2022-05-28 02:58:19  INFO app::meili_client: search: "16803b930ef71357c12c7d21c1a3a69a"
+2022-05-28 02:58:19  INFO app: search_doc_file query: "ae3c54b358fc7d0c5d71e4fb74aaa14b", offset: 0, limit: 1
+2022-05-28 02:58:19  INFO app::meili_client: search: "ae3c54b358fc7d0c5d71e4fb74aaa14b"
+2022-05-28 02:58:19  INFO app: search_doc_file query: "83a77cf73906bcc907b6d41ba82b336a", offset: 0, limit: 1
+2022-05-28 02:58:19  INFO app::meili_client: search: "83a77cf73906bcc907b6d41ba82b336a"
+2022-05-28 02:58:19  INFO app: search_doc_file query: "571b95a6f7f1917b877d1387c0f3c3d5", offset: 0, limit: 1
+2022-05-28 02:58:19  INFO app::meili_client: search: "571b95a6f7f1917b877d1387c0f3c3d5"
+2022-05-28 02:58:19  INFO app: search_doc_file query: "978634ddfc298647196a1b2487aeb397", offset: 0, limit: 1
+2022-05-28 02:58:19  INFO app::meili_client: search: "978634ddfc298647196a1b2487aeb397"
+2022-05-28 02:58:19  INFO app: search_doc_file query: "81e403be163bed73710fb4b7e8857e45", offset: 0, limit: 1
+2022-05-28 02:58:19  INFO app::meili_client: search: "81e403be163bed73710fb4b7e8857e45"
+2022-05-28 02:59:33  INFO app: Destroyed
+2022-05-28 02:59:33  INFO app::meili_client: stop_meilisearch
