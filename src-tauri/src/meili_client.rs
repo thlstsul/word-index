@@ -72,9 +72,10 @@ fn restart_meilisearch(host: &str, api_key: &str) {
         stop_meilisearch();
     }
     let db_path = std::env::current_dir().unwrap().join("data.ms");
+    // let log_path = std::env::current_dir().unwrap().join("meilisearch.log");
     if cfg!(target_os = "windows") {
         let cmd = format!(
-            "Start-Process -WindowStyle Hidden -FilePath meilisearch -ArgumentList \"--db-path={} --http-addr={} --master-key={}\"",
+            "Start-Process -WindowStyle Hidden -FilePath meilisearch -ArgumentList \"--max-indexing-memory=1024Mb --db-path={} --http-addr={} --master-key={}\"",
             db_path.to_str().unwrap(),
             host,
             api_key
