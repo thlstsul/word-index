@@ -116,5 +116,7 @@ async function search_doc_file(keyword, pageNum, pageSize) {
 
 .doc_content {
   font-family: "Microsoft YaHei";
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 </style>

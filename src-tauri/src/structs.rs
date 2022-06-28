@@ -6,7 +6,7 @@ use std::{
 
 use serde::{Deserialize, Serialize};
 use tauri::api::process::Command;
-use tracing::info;
+use tracing::{info, instrument};
 
 use crate::utils::union_err;
 
@@ -72,8 +72,9 @@ fn get_file_timestamp(path: &Path) -> Result<u64, String> {
 
 /// 调用pandoc，读取docx文件，返回文件内容
 /// 需要提前安装pandoc
+#[instrument]
 fn read_docx_file(path: &str) -> Result<String, String> {
-    info!("read_docx_file: {}", path);
+    info!("read_docx_file");
     Command::new("pandoc")
         .args(&[
             "-t",

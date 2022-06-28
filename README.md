@@ -1,10 +1,9 @@
 # word-index
-该程序用于检索word文件，依赖于Pandoc的解析能力和Meilisearch的检索能力，需要在运行前安装Pandoc和Meilisearch，并配置好相关的环境变量
+该程序用于检索word文件，依赖于Pandoc的解析能力，需要在运行前安装Pandoc
 
 ## Prepare
 ```
-scoop install meilisearch
-scoop install pandoc
+git submodule update
 ```
 
 ## Project setup
