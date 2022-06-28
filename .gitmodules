@@ -1,0 +1,3 @@
+[submodule "src-tauri/meilisearch"]
+	path = src-tauri/meilisearch
+	url = https://github.com/meilisearch/meilisearch.git
