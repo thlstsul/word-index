@@ -134,7 +134,7 @@ async fn search_doc_file(keyword: String, offset: usize, limit: usize) -> Result
         .map_err(union_err)?;
 
     let mut ret = json!({});
-    ret["total"] = json!(results.estimated_total_hits);
+    ret["total"] = json!(results.nb_hits);
     ret["offset"] = json!(results.offset);
     ret["limit"] = json!(results.limit);
     ret["results"] = json!(results.hits);
@@ -254,15 +254,15 @@ async fn search(
         limit,
         attributes_to_retrieve: None,
         attributes_to_crop: None,
-        crop_length: DEFAULT_CROP_LENGTH(),
+        crop_length: DEFAULT_CROP_LENGTH,
         attributes_to_highlight: None,
-        show_matches_position: false,
         filter: None,
         sort: None,
-        facets: None,
-        highlight_post_tag: DEFAULT_HIGHLIGHT_POST_TAG(),
-        highlight_pre_tag: DEFAULT_HIGHLIGHT_PRE_TAG(),
-        crop_marker: DEFAULT_CROP_MARKER(),
+        highlight_post_tag: DEFAULT_HIGHLIGHT_POST_TAG.to_string(),
+        highlight_pre_tag: DEFAULT_HIGHLIGHT_PRE_TAG.to_string(),
+        crop_marker: DEFAULT_CROP_MARKER.to_string(),
+        matches: false,
+        facets_distribution: None,
     };
 
     get_meili().search(index_name, search_query).await
