@@ -17,7 +17,6 @@ mod pandoc {
 
     use anyhow::Context;
     use cargo_toml::Manifest;
-    use reqwest::blocking::get;
     use sha1::{Digest, Sha1};
 
     pub fn setup_pandoc() -> anyhow::Result<()> {
@@ -27,7 +26,7 @@ mod pandoc {
         let bin_dir = PathBuf::from("bin");
 
         let pandoc_dir = out_dir.join("pandoc");
-        let sha1_path = out_dir.join(".mini-dashboard.sha1");
+        let sha1_path = out_dir.join(".pandoc.sha1");
 
         let manifest = Manifest::from_path(cargo_toml).unwrap();
 
