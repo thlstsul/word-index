@@ -1,5 +1,5 @@
 # word-index
-该程序用于检索word文件，依赖于Pandoc的解析能力，需要在运行前安装Pandoc
+该程序用于检索word文件，meilisearch提供检索能力，pandoc提供解析能力
 
 ## Prepare
 ```

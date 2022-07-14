@@ -13,6 +13,14 @@ rust-version = "1.57"
 
 [build-dependencies]
 tauri-build = { version = "1.0.0", features = [] }
+anyhow = { version = "1.0.56", optional = true }
+cargo_toml = { version = "0.11.4", optional = true }
+hex = { version = "0.4.3", optional = true }
+reqwest = { version = "0.11.9", features = ["blocking", "rustls-tls"], default-features = false, optional = true }
+sha-1 = { version = "0.10.0", optional = true }
+tempfile = { version = "3.3.0", optional = true }
+vergen = { version = "7.0.0", default-features = false, features = ["git"] }
+zip = { version = "0.5.13", optional = true }
 
 [dependencies]
 serde_json = "1.0"
@@ -36,7 +44,20 @@ dotext = "0.1.1"
 [features]
 # by default Tauri runs in production mode
 # when `tauri dev` runs it is executed with `cargo run --no-default-features` if `devPath` is an URL
-default = [ "custom-protocol" ]
+default = [ "custom-protocol", "pandoc" ]
 # this feature is used used for production builds where `devPath` points to the filesystem
 # DO NOT remove this
 custom-protocol = [ "tauri/custom-protocol" ]
+pandoc = [
+    "anyhow",
+    "cargo_toml",
+    "hex",
+    "reqwest",
+    "sha-1",
+    "tempfile",
+    "zip",
+]
+
+[package.metadata.pandoc]
+assets-url = "https://github.com/jgm/pandoc/releases/download/2.18/pandoc-2.18-windows-x86_64.zip"
+sha1 = "7db15a14081b52c851a42a5a69a6fd52958ab110"
