@@ -23,6 +23,9 @@
             :key="i"
             :header="doc.name"
           >
+            <a-back-top>
+              <div class="ant-back-top-inner">顶</div>
+            </a-back-top>
             <a-button
               type="primary"
               @click="() => open_file(doc.path)"
@@ -118,5 +121,19 @@ async function search_doc_file(keyword, pageNum, pageSize) {
   font-family: "Microsoft YaHei";
   white-space: pre-wrap;
   word-wrap: break-word;
+}
+
+.ant-back-top {
+  bottom: 100px;
+}
+.ant-back-top-inner {
+  height: 40px;
+  width: 40px;
+  line-height: 40px;
+  border-radius: 4px;
+  background-color: #292a2b;
+  color: #e6e6e6;
+  text-align: center;
+  font-size: 20px;
 }
 </style>
