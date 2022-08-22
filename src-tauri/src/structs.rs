@@ -7,8 +7,7 @@ use std::{
 use serde::{Deserialize, Serialize};
 use tauri::api::process::Command;
 use tracing::{info, instrument};
-
-use crate::utils::union_err;
+use anyhow::Result;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Docx {
@@ -20,7 +19,7 @@ pub struct Docx {
 }
 
 impl Docx {
-    pub fn new(path: &PathBuf) -> Result<Docx, String> {
+    pub fn new(path: &PathBuf) -> Result<Docx> {
         let name = path.file_name().unwrap().to_str().unwrap();
         let path_name = path.to_str().unwrap();
         let timestamp = get_file_timestamp(&path)?;
@@ -50,22 +49,19 @@ impl Docx {
     pub fn get_timestamp(&self) -> u64 {
         self.timestamp
     }
-    pub fn set_content(&mut self) -> Result<(), String> {
+    pub fn set_content(&mut self) -> Result<()> {
         self.content = read_docx_file(&self.path)?;
         Ok(())
     }
 }
 
 /// 文件时间戳
-fn get_file_timestamp(path: &Path) -> Result<u64, String> {
-    let file = File::open(path).map_err(union_err)?;
+fn get_file_timestamp(path: &Path) -> Result<u64> {
+    let file = File::open(path)?;
     let timestamp = file
-        .metadata()
-        .map_err(union_err)?
-        .modified()
-        .map_err(union_err)?
-        .duration_since(SystemTime::UNIX_EPOCH)
-        .map_err(union_err)?
+        .metadata()?
+        .modified()?
+        .duration_since(SystemTime::UNIX_EPOCH)?
         .as_secs();
     Ok(timestamp)
 }
@@ -73,7 +69,7 @@ fn get_file_timestamp(path: &Path) -> Result<u64, String> {
 /// 调用pandoc，读取docx文件，返回文件内容
 /// 需要提前安装pandoc
 #[instrument]
-fn read_docx_file(path: &str) -> Result<String, String> {
+fn read_docx_file(path: &str) -> Result<String> {
     info!("read_docx_file");
     Command::new("pandoc")
         .args(&[
@@ -85,5 +81,5 @@ fn read_docx_file(path: &str) -> Result<String, String> {
         ])
         .output()
         .map(|output| output.stdout)
-        .map_err(union_err)
+        .map_err(|e| e.into())
 }

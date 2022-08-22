@@ -23,6 +23,7 @@ use serde_json::to_string;
 use tokio::{runtime::Builder, sync::mpsc, task::LocalSet};
 use tokio_stream::Stream;
 use tracing::{error, info};
+use anyhow::Result;
 
 static mut MEILI_SEARCH: MaybeUninit<MeiliSearch> = MaybeUninit::uninit();
 static INIT: Once = Once::new();

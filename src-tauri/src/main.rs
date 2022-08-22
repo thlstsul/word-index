@@ -3,25 +3,23 @@
     windows_subsystem = "windows"
 )]
 
-use std::path::{Path, PathBuf};
 use std::time::Duration;
 
 use crate::config::{get_configs, save_config};
 use crate::meilisearch::{add_documents, index_finished, search};
-use crate::utils::union_err;
+use async_walkdir::{DirEntry, Filtering, WalkDir};
 use serde_json::{json, Value};
 use structs::Docx;
-use tauri::api::dir::{read_dir, DiskEntry};
 use tauri::api::process::Command;
 use time::{macros::format_description, UtcOffset};
 use tokio::time::sleep;
-use tracing::{info, instrument};
+use tokio_stream::StreamExt;
+use tracing::{error, info, instrument};
 use tracing_subscriber::fmt::time::OffsetTime;
 
 mod config;
 mod meilisearch;
 mod structs;
-mod utils;
 
 const INDEX_NAME: &str = "WORD-INDEX";
 const INDEX_PATH: &str = "paths";
@@ -60,30 +58,55 @@ fn main() {
 #[tauri::command]
 #[instrument]
 async fn index_doc_file(dir_path: String) -> Result<(), String> {
-    info!("index_doc_file");
-    let file_paths = plat_dir(&dir_path)?;
-    for file_path in file_paths.iter().rev() {
-        if file_path.is_file()
-            && (file_path.extension() == Some(std::ffi::OsStr::new("docx"))
-                || file_path.extension() == Some(std::ffi::OsStr::new("doc")))
+    let mut entries = WalkDir::new(dir_path).filter(|entry| async move {
+        if let Some(true) = entry
+            .path()
+            .file_name()
+            .map(|f| f.to_string_lossy().starts_with('.'))
         {
-            let mut docx = Docx::new(&file_path)?;
-
-            if !docx.get_name().starts_with("~$") && !existed(&docx).await {
-                docx.set_content()?;
-                info!("indexing: {}", docx.get_path());
-                add_documents(INDEX_NAME.to_string(), &[docx], None)
-                    .await
-                    .map_err(union_err)?;
-            }
+            return Filtering::IgnoreDir;
+        }
+        Filtering::Continue
+    });
+    loop {
+        match entries.next().await {
+            Some(Ok(entry)) => match index_one(&entry).await {
+                Err(e) => error!("{}", e),
+                Ok(_) => {},
+            },
+            Some(Err(e)) => return Err(e.to_string()),
+            None => break,
         }
     }
 
     // 监控索引task，直到索引完成
     while !index_finished(INDEX_NAME.to_string()).await {
+        info!("indexing...");
         sleep(Duration::from_millis(500)).await;
     }
 
+    Ok(())
+}
+
+async fn index_one(entry: &DirEntry) -> anyhow::Result<()> {
+    if entry.file_type().await?.is_dir() {
+        return Ok(());
+    }
+    let file_name = entry
+        .file_name()
+        .into_string()
+        .map_err(|e| anyhow::anyhow!("{:?}", e))?;
+    if file_name.starts_with("~$") || !(file_name.ends_with(".docx") || file_name.ends_with(".doc"))
+    {
+        return Ok(());
+    }
+
+    let mut docx = Docx::new(&entry.path())?;
+    if !docx.get_name().starts_with("~$") && !existed(&docx).await {
+        docx.set_content()?;
+        info!("indexing: {}", docx.get_path());
+        add_documents(INDEX_NAME.to_string(), &[docx], None).await?;
+    }
     Ok(())
 }
 
@@ -91,11 +114,9 @@ async fn index_doc_file(dir_path: String) -> Result<(), String> {
 #[tauri::command]
 #[instrument]
 async fn search_doc_file(keyword: String, offset: usize, limit: usize) -> Result<Value, String> {
-    info!("search_doc_file query");
-
     let results = search(INDEX_NAME.to_string(), keyword, offset, limit)
         .await
-        .map_err(union_err)?;
+        .map_err(|e| format!("检索失败：{}", e))?;
 
     let mut ret = json!({});
     ret["total"] = json!(results.estimated_total_hits);
@@ -110,22 +131,15 @@ async fn search_doc_file(keyword: String, offset: usize, limit: usize) -> Result
 #[instrument]
 async fn save_path(path: String) -> Result<(), String> {
     info!("save_path");
-    let value = get_configs(INDEX_PATH)?;
+    let mut value = get_configs(INDEX_PATH).map_err(|e| format!("读取索引路径失败：{}", e))?;
     if value.is_null() {
-        let mut value = json!([]);
-        value
-            .as_array_mut()
-            .unwrap()
-            .push(serde_json::Value::String(path));
-        save_config(INDEX_PATH, value)?;
-    } else {
-        let mut value = value.clone();
-        value
-            .as_array_mut()
-            .unwrap()
-            .push(serde_json::Value::String(path));
-        save_config(INDEX_PATH, value)?;
+        value = json!([]);
     }
+    value
+        .as_array_mut()
+        .unwrap()
+        .push(serde_json::Value::String(path));
+    save_config(INDEX_PATH, value).map_err(|e| format!("保存索引路径失败：{}", e))?;
     Ok(())
 }
 
@@ -134,7 +148,7 @@ async fn save_path(path: String) -> Result<(), String> {
 #[instrument]
 async fn get_paths() -> Result<Value, String> {
     info!("get_paths");
-    let value = get_configs(INDEX_PATH)?;
+    let value = get_configs(INDEX_PATH).map_err(|e| format!("读取索引路径失败：{}", e))?;
     if value == json!(null) {
         Ok(json!([]))
     } else {
@@ -144,37 +158,16 @@ async fn get_paths() -> Result<Value, String> {
 
 #[tauri::command]
 #[instrument]
-fn open_file(path: String) -> Result<(), String> {
+fn open_file(path: String) -> anyhow::Result<(), String> {
     info!("open_file");
+    open_file_by_default_program(&path).map_err(|e| format!("打开原文件失败：{}", e))
+}
+
+fn open_file_by_default_program(path: &str) -> anyhow::Result<()> {
     Command::new("rundll32")
         .args(["url.dll", "FileProtocolHandler", &path])
-        .output()
-        .map_err(union_err)?;
+        .output()?;
     Ok(())
-}
-
-/// 扁平化文件夹
-fn plat_dir(dir: &str) -> Result<Vec<PathBuf>, String> {
-    let dir_path = Path::new(&dir);
-    if dir_path.is_file() {
-        return Ok(vec![dir_path.to_path_buf()]);
-    }
-    let dir_entry = read_dir(dir_path, true).map_err(union_err)?;
-    let mut paths = disk_entry_recursive(dir_entry);
-    paths.sort();
-    Ok(paths)
-}
-
-fn disk_entry_recursive(disk_entrys: Vec<DiskEntry>) -> Vec<PathBuf> {
-    let mut paths = Vec::new();
-    for disk_entry in disk_entrys {
-        if let Some(children) = disk_entry.children {
-            paths.extend(disk_entry_recursive(children));
-        } else {
-            paths.push(disk_entry.path);
-        }
-    }
-    paths
 }
 
 /// 文件是否已经存在、是否过期

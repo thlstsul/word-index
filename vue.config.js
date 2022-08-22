@@ -9,6 +9,7 @@ module.exports = defineConfig({
       less: {
         lessOptions: {
           modifyVars: {
+            "primary-color": "#292a2b",
             "link-color": "#e6e6e6",
             "border-radius-base": "2px",
           },
