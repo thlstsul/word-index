@@ -102,7 +102,7 @@ async fn index_one(entry: &DirEntry) -> anyhow::Result<()> {
     }
 
     let mut docx = Docx::new(&entry.path())?;
-    if !docx.get_name().starts_with("~$") && !existed(&docx).await {
+    if !existed(&docx).await {
         docx.set_content()?;
         info!("indexing: {}", docx.get_path());
         add_documents(INDEX_NAME.to_string(), &[docx], None).await?;
