@@ -31,6 +31,7 @@ static INIT: Once = Once::new();
 const API_KEY: &str = "thlstsul";
 
 pub fn setup() {
+    info!("meilisearch启动开始……");
     INIT.call_once(|| {
         let rt = Builder::new_current_thread().enable_all().build().unwrap();
 
@@ -53,6 +54,7 @@ pub fn setup() {
             rt.block_on(local);
         });
     });
+    info!("meilisearch启动完成。");
 }
 
 pub async fn add_documents<T: 'static + Serialize>(

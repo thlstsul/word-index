@@ -34,8 +34,13 @@ export default {
     const value = ref("");
     const paths = ref([]);
     const index = () => {
-      save_path(value.value);
-      paths.value.push({value: value.value, loaded: false});
+      save_path(value.value)
+        .then(() => {
+          paths.value.push({ value: value.value, loaded: false });
+        })
+        .catch((err) => {
+          message.info(err);
+        });
     };
 
     onMounted(() => {
@@ -43,7 +48,7 @@ export default {
         .then((res) => {
           const pathsTmp = [];
           for (const path of res) {
-            pathsTmp.push({value: path, loaded: true});
+            pathsTmp.push({ value: path, loaded: true });
           }
           paths.value = pathsTmp;
         })
@@ -60,10 +65,8 @@ export default {
   },
 };
 
-function save_path(path) {
-  invoke("save_path", { path }).catch((e) => {
-    message.info(e);
-  });
+async function save_path(path) {
+  return invoke("save_path", { path });
 }
 
 async function get_paths() {

@@ -5,7 +5,7 @@
 
 use std::time::Duration;
 
-use crate::config::{get_configs, save_config};
+use crate::config::Config;
 use crate::meilisearch::{add_documents, index_finished, search};
 use async_walkdir::{DirEntry, Filtering, WalkDir};
 use serde_json::{json, Value};
@@ -22,7 +22,6 @@ mod meilisearch;
 mod structs;
 
 const INDEX_NAME: &str = "WORD-INDEX";
-const INDEX_PATH: &str = "paths";
 
 fn main() {
     let file_appender = tracing_appender::rolling::never(".", "word-index.log");
@@ -96,8 +95,7 @@ async fn index_one(entry: &DirEntry) -> anyhow::Result<()> {
         .file_name()
         .into_string()
         .map_err(|e| anyhow::anyhow!("{:?}", e))?;
-    if file_name.starts_with("~$") || !(file_name.ends_with(".docx") || file_name.ends_with(".doc"))
-    {
+    if file_name.starts_with("~$") {
         return Ok(());
     }
 
@@ -131,29 +129,24 @@ async fn search_doc_file(keyword: String, offset: usize, limit: usize) -> Result
 #[instrument]
 async fn save_path(path: String) -> Result<(), String> {
     info!("save_path");
-    let mut value = get_configs(INDEX_PATH).map_err(|e| format!("读取索引路径失败：{}", e))?;
-    if value.is_null() {
-        value = json!([]);
+    let mut config = Config::load().map_err(|e| format!("读取配置失败：{}", e))?;
+    if config.paths.contains(&path) {
+        return Err(format!("{}\n索引路径已存在！", path));
+    } else {
+        config.paths.push(path);
+        config.save().map_err(|e| format!("保存索引路径失败：{}", e))?;
     }
-    value
-        .as_array_mut()
-        .unwrap()
-        .push(serde_json::Value::String(path));
-    save_config(INDEX_PATH, value).map_err(|e| format!("保存索引路径失败：{}", e))?;
+    
     Ok(())
 }
 
 /// 读取索引路径
 #[tauri::command]
 #[instrument]
-async fn get_paths() -> Result<Value, String> {
+async fn get_paths() -> Result<Vec<String>, String> {
     info!("get_paths");
-    let value = get_configs(INDEX_PATH).map_err(|e| format!("读取索引路径失败：{}", e))?;
-    if value == json!(null) {
-        Ok(json!([]))
-    } else {
-        Ok(value)
-    }
+    let config = Config::load().map_err(|e| format!("读取配置失败：{}", e))?;
+    Ok(config.paths)
 }
 
 #[tauri::command]
