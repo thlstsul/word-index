@@ -10,9 +10,7 @@ use tauri::api::process::Command;
 use tracing::{info, instrument};
 
 const PLAIN_FILE_TYPE: [&str; 2] = ["txt", "sql",];
-const HYPER_FILE_TYPE: [&str; 8] = [
-    "docx", "doc", "html", "md", "pptx", "ppt", "xlsx", "xls",
-];
+const HYPER_FILE_TYPE: [&str; 2] = ["docx", "doc",];
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Docx {

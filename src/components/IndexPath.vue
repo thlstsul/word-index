@@ -33,14 +33,8 @@ export default {
     };
 
     onMounted(() => {
-      if (props.loading) {
-        index_doc_file(props.path)
-          .then(() => {
-            loading.value = false;
-          })
-          .catch((e) => {
-            message.info(e);
-          });
+      if (loading.value) {
+        reindex(props.path);
       }
     });
 
