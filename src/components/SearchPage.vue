@@ -40,7 +40,8 @@
           :current="current"
           :total="total"
           :page-size="pageSize"
-          show-less-items
+          show-less-items=true
+          page-size-options=[]
           @change="selectPage"
           style="float:right;margin: 10px 0;"
         />

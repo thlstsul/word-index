@@ -71,7 +71,7 @@ async fn index_doc_file(dir_path: String) -> Result<(), String> {
         match entries.next().await {
             Some(Ok(entry)) => match index_one(&entry).await {
                 Err(e) => error!("{}", e),
-                Ok(_) => {},
+                Ok(_) => {}
             },
             Some(Err(e)) => return Err(e.to_string()),
             None => break,
@@ -114,7 +114,10 @@ async fn index_one(entry: &DirEntry) -> anyhow::Result<()> {
 async fn search_doc_file(keyword: String, offset: usize, limit: usize) -> Result<Value, String> {
     let results = search(INDEX_NAME.to_string(), keyword, offset, limit)
         .await
-        .map_err(|e| format!("检索失败：{}", e))?;
+        .map_err(|e| {
+            error!("检索失败：{}", e);
+            format!("检索失败：{}", e)
+        })?;
 
     let mut ret = json!({});
     ret["total"] = json!(results.estimated_total_hits);
@@ -134,9 +137,11 @@ async fn save_path(path: String) -> Result<(), String> {
         return Err(format!("{}\n索引路径已存在！", path));
     } else {
         config.paths.push(path);
-        config.save().map_err(|e| format!("保存索引路径失败：{}", e))?;
+        config
+            .save()
+            .map_err(|e| format!("保存索引路径失败：{}", e))?;
     }
-    
+
     Ok(())
 }
 

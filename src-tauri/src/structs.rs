@@ -1,16 +1,19 @@
 use std::{
+    ffi::OsStr,
     fs::File,
     path::{Path, PathBuf},
-    time::SystemTime, ffi::OsStr,
+    time::SystemTime, io::Read,
 };
 
 use anyhow::*;
+use encoding::{Encoding, DecoderTrap};
+use encoding::all::GBK;
 use serde::{Deserialize, Serialize};
 use tauri::api::process::Command;
-use tracing::{info, instrument};
+use tracing::{error, info, instrument};
 
-const PLAIN_FILE_TYPE: [&str; 2] = ["txt", "sql",];
-const HYPER_FILE_TYPE: [&str; 2] = ["docx", "doc",];
+const PLAIN_FILE_TYPE: [&str; 2] = ["txt", "sql"];
+const HYPER_FILE_TYPE: [&str; 2] = ["docx", "doc"];
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Docx {
@@ -122,5 +125,17 @@ fn read_docx_file(path: &str) -> Result<String> {
 
 #[instrument]
 fn read_plain_file(path: &str) -> Result<String> {
-    std::fs::read_to_string(path).map_err(|e| anyhow!(e))
+    match std::fs::read_to_string(path) {
+        Err(e) => {
+            error!("读取文件{}失败：{}", path, e);
+            let mut file = File::open(path)?;
+            let mut buf = Vec::new();
+            file.read_to_end(&mut buf)?;
+            GBK.decode(&buf, DecoderTrap::Strict).map_err(|e| {
+                error!("读取文件{}失败：{}", path, e);
+                anyhow!(e)
+            })
+        },
+        r => r.map_err(|e| anyhow!(e)),
+    }
 }
