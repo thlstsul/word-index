@@ -1,19 +1,19 @@
 use std::{
     ffi::OsStr,
-    fs::File,
+    io::Read,
     path::{Path, PathBuf},
-    time::SystemTime, io::Read,
+    time::SystemTime,
 };
 
 use anyhow::*;
-use encoding::{Encoding, DecoderTrap};
 use encoding::all::GBK;
+use encoding::{DecoderTrap, Encoding};
 use serde::{Deserialize, Serialize};
-use tauri::api::process::Command;
+use tokio::{fs::File, process::Command, io::AsyncReadExt};
 use tracing::{error, info, instrument};
 
 const PLAIN_FILE_TYPE: [&str; 2] = ["txt", "sql"];
-const HYPER_FILE_TYPE: [&str; 2] = ["docx", "doc"];
+const HYPER_FILE_TYPE: [&str; 2] = ["docx", "md"];
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Docx {
@@ -25,13 +25,13 @@ pub struct Docx {
 }
 
 impl Docx {
-    pub fn new(path: &PathBuf) -> Result<Docx> {
+    pub async fn new(path: &PathBuf) -> Result<Docx> {
         if !is_support(path) {
-            return Err(anyhow!("未支持的文件类型！"));
+            return Err(anyhow!("{:?}\n未支持的文件类型！", path));
         }
         let name = path.file_name().unwrap().to_str().unwrap();
         let path_name = path.to_str().unwrap();
-        let timestamp = get_file_timestamp(&path)?;
+        let timestamp = get_file_timestamp(&path).await?;
         let md5 = md5::compute(path_name.as_bytes());
         let id = format!("{:x}", md5);
         Ok(Self {
@@ -55,13 +55,13 @@ impl Docx {
         self.timestamp
     }
 
-    pub fn set_content(&mut self) -> Result<()> {
+    pub async fn set_content(&mut self) -> Result<()> {
         let path = PathBuf::from(&self.path);
         let extension = path.extension().unwrap();
         if is_plain(extension) {
-            self.content = read_plain_file(&self.path)?;
+            self.content = read_plain_file(&self.path).await?;
         } else {
-            self.content = read_docx_file(&self.path)?;
+            self.content = read_docx_file(&self.path).await?;
         }
         Ok(())
     }
@@ -95,10 +95,11 @@ fn is_hyper(extension: &OsStr) -> bool {
 }
 
 /// 文件时间戳
-fn get_file_timestamp(path: &Path) -> Result<u64> {
-    let file = File::open(path)?;
+async fn get_file_timestamp(path: &Path) -> Result<u64> {
+    let file = File::open(path).await?;
     let timestamp = file
-        .metadata()?
+        .metadata()
+        .await?
         .modified()?
         .duration_since(SystemTime::UNIX_EPOCH)?
         .as_secs();
@@ -108,9 +109,9 @@ fn get_file_timestamp(path: &Path) -> Result<u64> {
 /// 调用pandoc，读取docx文件，返回文件内容
 /// 需要提前安装pandoc
 #[instrument]
-fn read_docx_file(path: &str) -> Result<String> {
+async fn read_docx_file(path: &str) -> Result<String> {
     info!("read_docx_file");
-    Command::new("pandoc")
+    let output = Command::new("pandoc")
         .args(&[
             "-t",
             "plain",
@@ -119,23 +120,23 @@ fn read_docx_file(path: &str) -> Result<String> {
             path,
         ])
         .output()
-        .map(|output| output.stdout)
-        .map_err(|e| e.into())
+        .await?;
+    String::from_utf8(output.stdout).map_err(|e| anyhow!(e))
 }
 
 #[instrument]
-fn read_plain_file(path: &str) -> Result<String> {
-    match std::fs::read_to_string(path) {
+async fn read_plain_file(path: &str) -> Result<String> {
+    match tokio::fs::read_to_string(path).await {
         Err(e) => {
             error!("读取文件{}失败：{}", path, e);
-            let mut file = File::open(path)?;
+            let mut file = File::open(path).await?;
             let mut buf = Vec::new();
-            file.read_to_end(&mut buf)?;
+            file.read_to_end(&mut buf).await?;
             GBK.decode(&buf, DecoderTrap::Strict).map_err(|e| {
                 error!("读取文件{}失败：{}", path, e);
                 anyhow!(e)
             })
-        },
+        }
         r => r.map_err(|e| anyhow!(e)),
     }
 }

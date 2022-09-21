@@ -1,6 +1,7 @@
-use std::{mem::MaybeUninit, str::FromStr, sync::Once};
+use std::{collections::BTreeSet, mem::MaybeUninit, str::FromStr, sync::Once};
 
 use actix_web::error::PayloadError;
+use anyhow::Result;
 use bytes::Bytes;
 use clap::Parser;
 use meilisearch_http::{setup_meilisearch, Opt};
@@ -23,7 +24,6 @@ use serde_json::to_string;
 use tokio::{runtime::Builder, sync::mpsc, task::LocalSet};
 use tokio_stream::Stream;
 use tracing::{error, info};
-use anyhow::Result;
 
 static mut MEILI_SEARCH: MaybeUninit<MeiliSearch> = MaybeUninit::uninit();
 static INIT: Once = Once::new();
@@ -100,6 +100,35 @@ pub async fn search(
     };
 
     get_meili().unwrap().search(index_name, search_query).await
+}
+
+pub async fn existed(index_name: String, id: &str, timestamp: u64) -> bool {
+    let search_query = SearchQuery {
+        q: Some(id.to_string()),
+        offset: None,
+        limit: 1,
+        attributes_to_retrieve: Some(BTreeSet::from(["id".to_string(), "timestamp".to_string()])),
+        attributes_to_crop: None,
+        crop_length: DEFAULT_CROP_LENGTH(),
+        attributes_to_highlight: None,
+        show_matches_position: false,
+        filter: None,
+        sort: None,
+        facets: None,
+        highlight_post_tag: DEFAULT_HIGHLIGHT_POST_TAG(),
+        highlight_pre_tag: DEFAULT_HIGHLIGHT_PRE_TAG(),
+        crop_marker: DEFAULT_CROP_MARKER(),
+    };
+    let result = get_meili().unwrap().search(index_name, search_query).await;
+
+    if let Ok(r) = result {
+        if r.hits.len() == 0 {
+            return false;
+        }
+        let doc = &r.hits[0].document;
+        return id == doc["id"] && timestamp == doc["timestamp"];
+    }
+    false
 }
 
 /// 是否索引完成

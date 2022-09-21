@@ -6,7 +6,7 @@
 use std::time::Duration;
 
 use crate::config::Config;
-use crate::meilisearch::{add_documents, index_finished, search};
+use crate::meilisearch::{add_documents, index_finished, search, existed};
 use async_walkdir::{DirEntry, Filtering, WalkDir};
 use serde_json::{json, Value};
 use structs::Docx;
@@ -80,7 +80,6 @@ async fn index_doc_file(dir_path: String) -> Result<(), String> {
 
     // 监控索引task，直到索引完成
     while !index_finished(INDEX_NAME.to_string()).await {
-        info!("indexing...");
         sleep(Duration::from_millis(500)).await;
     }
 
@@ -99,9 +98,9 @@ async fn index_one(entry: &DirEntry) -> anyhow::Result<()> {
         return Ok(());
     }
 
-    let mut docx = Docx::new(&entry.path())?;
-    if !existed(&docx).await {
-        docx.set_content()?;
+    let mut docx = Docx::new(&entry.path()).await?;
+    if !existed(INDEX_NAME.to_string(), docx.get_id(), docx.get_timestamp()).await {
+        docx.set_content().await?;
         info!("indexing: {}", docx.get_path());
         add_documents(INDEX_NAME.to_string(), &[docx], None).await?;
     }
@@ -166,19 +165,4 @@ fn open_file_by_default_program(path: &str) -> anyhow::Result<()> {
         .args(["url.dll", "FileProtocolHandler", &path])
         .output()?;
     Ok(())
-}
-
-/// 文件是否已经存在、是否过期
-async fn existed(docx: &Docx) -> bool {
-    let id = docx.get_id();
-    let file_timestamp = docx.get_timestamp();
-    let exist_docxs = search_doc_file(format!("\"{}\"", id), 0, 1).await;
-    if let Ok(exist_docxs) = exist_docxs {
-        for exist_docx in exist_docxs["results"].as_array().unwrap() {
-            if exist_docx["id"] == id && exist_docx["timestamp"] == file_timestamp {
-                return true;
-            }
-        }
-    }
-    false
 }
