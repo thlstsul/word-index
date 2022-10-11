@@ -65,10 +65,11 @@ export default {
     const pageSize = ref(5);
 
     const search = () => {
-      search_doc_file(value.value, current.value, pageSize.value)
+      search_doc_file(value.value, 1, pageSize.value)
         .then((res) => {
           docs.value = res.results;
           total.value = res.total;
+          current.value = 1;
         })
         .catch((err) => {
           message.info(err);

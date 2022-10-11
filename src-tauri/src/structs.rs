@@ -1,6 +1,5 @@
 use std::{
     ffi::OsStr,
-    io::Read,
     path::{Path, PathBuf},
     time::SystemTime,
 };
@@ -70,7 +69,8 @@ impl Docx {
 pub fn is_support(path: &PathBuf) -> bool {
     let extension = path.extension();
     if let Some(e) = extension {
-        is_plain(e) || is_hyper(e)
+        let e = e.to_ascii_lowercase();
+        is_plain(&e) || is_hyper(&e)
     } else {
         false
     }

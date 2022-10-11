@@ -1,6 +1,6 @@
 [package]
 name = "app"
-version = "3.4.0"
+version = "3.5.0"
 description = "word-index"
 authors = ["thelostsoul"]
 license = ""
@@ -12,7 +12,7 @@ rust-version = "1.57"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "1.0.0", features = [] }
+tauri-build = { version = "1.1.0", features = [] }
 anyhow = { version = "1.0.56", optional = true }
 cargo_toml = { version = "0.11.4", optional = true }
 hex = { version = "0.4.3", optional = true }
@@ -25,7 +25,7 @@ zip = { version = "0.5.13", optional = true }
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "1.0.0", features = ["api-all"] }
+tauri = { version = "1.1.0", features = ["api-all"] }
 meilisearch-lib = { path = "meilisearch/meilisearch-lib" }
 meilisearch-http = { path = "meilisearch/meilisearch-http", features = [], default-features = false }
 tracing = "0.1.32"
