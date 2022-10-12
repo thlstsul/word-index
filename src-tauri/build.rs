@@ -40,7 +40,7 @@ mod pandoc {
 
         let meta = if cfg!(windows) {
             &meta["windows"]
-        } else if cfg!(linux) {
+        } else if cfg!(unix) {
             &meta["linux"]
         } else if cfg!(macos) {
             &meta["macos"]
