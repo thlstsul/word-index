@@ -38,6 +38,16 @@ mod pandoc {
             .as_ref()
             .context("no metadata specified in Cargo.toml")?["pandoc"];
 
+        let meta = if cfg!(windows) {
+            &meta["windows"]
+        } else if cfg!(linux) {
+            &meta["linux"]
+        } else if cfg!(macos) {
+            &meta["macos"]
+        } else {
+            panic!("not supported os");
+        };
+
         // Check if there already is a dashboard built, and if it is up to date.
         if sha1_path.exists() && pandoc_dir.exists() {
             let mut sha1_file = File::open(&sha1_path)?;
@@ -50,6 +60,8 @@ mod pandoc {
         }
 
         let url = meta["assets-url"].as_str().unwrap();
+        let origin = meta["origin"].as_str().unwrap();
+        let target = meta["target"].as_str().unwrap();
 
         println!("下载pandoc中……");
         let client = reqwest::blocking::Client::builder()
@@ -69,27 +81,25 @@ mod pandoc {
             "Downloaded pandoc shasum differs from the one specified in the Cargo.toml"
         );
 
+        create_dir_all(&bin_dir)?;
         create_dir_all(&pandoc_dir)?;
+
         let cursor = Cursor::new(&pandoc_assets_bytes);
-        let mut zip = zip::read::ZipArchive::new(cursor)?;
-        zip.extract(&pandoc_dir)?;
+        if url.ends_with(".zip") {
+            let mut zip = zip::read::ZipArchive::new(cursor)?;
+            zip.extract(&pandoc_dir)?;
+        } else if url.ends_with(".tar.gz") {
+            let mut tar = tar::Archive::new(cursor);
+            tar.unpack(&pandoc_dir)?;
+        }
 
         // copy to bin
-        let pandoc_bin_dir = {
-            pandoc_dir
-                .as_path()
-                .read_dir()?
-                .next()
-                .unwrap()?
-                .path()
-        };
-        
-        if cfg!(windows) {
-            let pandoc_bin = File::open(pandoc_bin_dir.join("pandoc.exe"))?;
-            let bin = File::create(bin_dir.join("pandoc-x86_64-pc-windows-msvc.exe"))?;
-            println!("{:?} -> {:?}", pandoc_bin, bin);
-            std::io::copy(&mut BufReader::new(pandoc_bin), &mut BufWriter::new(bin))?;
-        }
+        let pandoc_bin_dir = pandoc_dir.as_path().read_dir()?.next().unwrap()?.path();
+
+        let pandoc_bin = File::open(pandoc_bin_dir.join(origin))?;
+        let bin = File::create(bin_dir.join(target))?;
+        println!("{:?} -> {:?}", pandoc_bin, bin);
+        std::io::copy(&mut BufReader::new(pandoc_bin), &mut BufWriter::new(bin))?;
 
         // Write the sha1 for the dashboard back to file.
         let mut file = OpenOptions::new()

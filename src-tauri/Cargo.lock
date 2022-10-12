@@ -315,6 +315,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sha-1",
+ "tar",
  "tauri",
  "tauri-build",
  "tempfile",
