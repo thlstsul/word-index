@@ -41,11 +41,11 @@ mod pandoc {
             .context("no metadata specified in Cargo.toml")
             .unwrap()["pandoc"];
 
-        let meta = if cfg!(windows) {
+        let meta = if cfg!(target_os = "windows") {
             &meta["windows"]
-        } else if cfg!(unix) {
+        } else if cfg!(target_os = "linux") {
             &meta["linux"]
-        } else if cfg!(macos) {
+        } else if cfg!(target_os = "macos") {
             &meta["macos"]
         } else {
             panic!("not supported os");
