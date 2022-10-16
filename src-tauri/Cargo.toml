@@ -27,7 +27,7 @@ flate2 = "1.0.24"
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "1.1.0", features = ["api-all"] }
+tauri = { version = "1.1.1", features = ["api-all"] }
 meilisearch-lib = { path = "meilisearch/meilisearch-lib" }
 meilisearch-http = { path = "meilisearch/meilisearch-http", features = [], default-features = false }
 tracing = "0.1.32"

@@ -43,8 +43,9 @@ jobs:
         run: |
           mkdir dist
 
-      - uses: JonasKruckenberg/tauri-build@v1
-        id: tauri_build
+      - name: build
+        run: |
+          npm run tauri:build
 
       # The `artifacts` output can now be used by a different action to upload the artifacts
       - uses: actions/upload-artifact@v3
