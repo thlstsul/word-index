@@ -156,7 +156,7 @@ fn open_file_by_default_program(path: &str) -> Result<()> {
 
 #[cfg(target_family = "unix")]
 fn open_file_by_default_program(path: &str) -> Result<()> {
-    Err(ApiError("未适配！"))
+    Err(ApiError(String::from("未适配！")))
 }
 
 type Result<T> = core::result::Result<T, ApiError>;
