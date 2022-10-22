@@ -6,8 +6,9 @@
 use std::time::Duration;
 
 use crate::config::Config;
-use crate::meilisearch::{add_documents, index_finished, search, existed};
+use crate::meilisearch::{add_documents, existed, index_finished, search};
 use async_walkdir::{DirEntry, Filtering, WalkDir};
+use serde::Serialize;
 use serde_json::{json, Value};
 use structs::Docx;
 use tauri::api::process::Command;
@@ -56,7 +57,7 @@ fn main() {
 /// 为指定路径的文件创建索引
 #[tauri::command]
 #[instrument]
-async fn index_doc_file(dir_path: String) -> Result<(), String> {
+async fn index_doc_file(dir_path: String) -> Result<()> {
     let mut entries = WalkDir::new(dir_path).filter(|entry| async move {
         if let Some(true) = entry
             .path()
@@ -69,11 +70,8 @@ async fn index_doc_file(dir_path: String) -> Result<(), String> {
     });
     loop {
         match entries.next().await {
-            Some(Ok(entry)) => match index_one(&entry).await {
-                Err(e) => error!("{}", e),
-                Ok(_) => {}
-            },
-            Some(Err(e)) => return Err(e.to_string()),
+            Some(Ok(entry)) => index_one(&entry).await,
+            Some(Err(e)) => return Err(ApiError(e.to_string())),
             None => break,
         }
     }
@@ -86,37 +84,27 @@ async fn index_doc_file(dir_path: String) -> Result<(), String> {
     Ok(())
 }
 
-async fn index_one(entry: &DirEntry) -> anyhow::Result<()> {
-    if entry.file_type().await?.is_dir() {
-        return Ok(());
+async fn index_one(entry: &DirEntry) {
+    let docx = Docx::new(entry).await;
+    match docx {
+        Ok(mut docx) => {
+            if !existed(INDEX_NAME.to_string(), docx.get_id(), docx.get_timestamp()).await {
+                if let Err(e) = docx.set_content().await {
+                    error!("{}", e);
+                } else if let Err(e) = add_documents(INDEX_NAME.to_string(), &[docx], None).await {
+                    error!("{}", e)
+                }
+            }
+        }
+        Err(e) => error!("{}", e),
     }
-    let file_name = entry
-        .file_name()
-        .into_string()
-        .map_err(|e| anyhow::anyhow!("{:?}", e))?;
-    if file_name.starts_with("~$") {
-        return Ok(());
-    }
-
-    let mut docx = Docx::new(&entry.path()).await?;
-    if !existed(INDEX_NAME.to_string(), docx.get_id(), docx.get_timestamp()).await {
-        docx.set_content().await?;
-        info!("indexing: {}", docx.get_path());
-        add_documents(INDEX_NAME.to_string(), &[docx], None).await?;
-    }
-    Ok(())
 }
 
 /// 搜索文件，支持分页
 #[tauri::command]
 #[instrument]
-async fn search_doc_file(keyword: String, offset: usize, limit: usize) -> Result<Value, String> {
-    let results = search(INDEX_NAME.to_string(), keyword, offset, limit)
-        .await
-        .map_err(|e| {
-            error!("检索失败：{}", e);
-            format!("检索失败：{}", e)
-        })?;
+async fn search_doc_file(keyword: String, offset: usize, limit: usize) -> Result<Value> {
+    let results = search(INDEX_NAME.to_string(), keyword, offset, limit).await?;
 
     let mut ret = json!({});
     ret["total"] = json!(results.estimated_total_hits);
@@ -129,16 +117,14 @@ async fn search_doc_file(keyword: String, offset: usize, limit: usize) -> Result
 /// 保存索引路径
 #[tauri::command]
 #[instrument]
-async fn save_path(path: String) -> Result<(), String> {
+async fn save_path(path: String) -> Result<()> {
     info!("save_path");
-    let mut config = Config::load().map_err(|e| format!("读取配置失败：{}", e))?;
+    let mut config = Config::load()?;
     if config.paths.contains(&path) {
-        return Err(format!("{}\n索引路径已存在！", path));
+        return Err(ApiError(format!("{}\n索引路径已存在！", path)));
     } else {
         config.paths.push(path);
-        config
-            .save()
-            .map_err(|e| format!("保存索引路径失败：{}", e))?;
+        config.save()?;
     }
 
     Ok(())
@@ -147,22 +133,57 @@ async fn save_path(path: String) -> Result<(), String> {
 /// 读取索引路径
 #[tauri::command]
 #[instrument]
-async fn get_paths() -> Result<Vec<String>, String> {
+async fn get_paths() -> Result<Vec<String>> {
     info!("get_paths");
-    let config = Config::load().map_err(|e| format!("读取配置失败：{}", e))?;
+    let config = Config::load()?;
     Ok(config.paths)
 }
 
 #[tauri::command]
 #[instrument]
-fn open_file(path: String) -> anyhow::Result<(), String> {
+fn open_file(path: String) -> Result<()> {
     info!("open_file");
-    open_file_by_default_program(&path).map_err(|e| format!("打开原文件失败：{}", e))
+    open_file_by_default_program(&path)
 }
 
-fn open_file_by_default_program(path: &str) -> anyhow::Result<()> {
+#[cfg(target_family = "windows")]
+fn open_file_by_default_program(path: &str) -> Result<()> {
     Command::new("rundll32")
         .args(["url.dll", "FileProtocolHandler", &path])
         .output()?;
     Ok(())
+}
+
+#[cfg(target_family = "unix")]
+fn open_file_by_default_program(path: &str) -> Result<()> {
+    Err(ApiError("未适配！"))
+}
+
+type Result<T> = core::result::Result<T, ApiError>;
+
+#[derive(Debug, Serialize)]
+struct ApiError(String);
+
+impl From<config::Error> for ApiError {
+    fn from(e: config::Error) -> Self {
+        Self(e.to_string())
+    }
+}
+
+impl From<meilisearch::Error> for ApiError {
+    fn from(e: meilisearch::Error) -> Self {
+        Self(e.to_string())
+    }
+}
+
+impl From<structs::Error> for ApiError {
+    fn from(e: structs::Error) -> Self {
+        Self(e.to_string())
+    }
+}
+
+impl From<tauri::api::Error> for ApiError {
+    fn from(e: tauri::api::Error) -> Self {
+        Self(e.to_string())
+    }
 }

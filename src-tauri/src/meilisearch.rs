@@ -1,13 +1,12 @@
 use std::{collections::BTreeSet, mem::MaybeUninit, str::FromStr, sync::Once};
 
 use actix_web::error::PayloadError;
-use anyhow::Result;
 use bytes::Bytes;
 use clap::Parser;
 use meilisearch_http::{setup_meilisearch, Opt};
 use meilisearch_lib::{
     index::{
-        SearchQuery, SearchResult, DEFAULT_CROP_LENGTH, DEFAULT_CROP_MARKER,
+        MatchingStrategy, SearchQuery, SearchResult, DEFAULT_CROP_LENGTH, DEFAULT_CROP_MARKER,
         DEFAULT_HIGHLIGHT_POST_TAG, DEFAULT_HIGHLIGHT_PRE_TAG,
     },
     index_controller::{error::IndexControllerError, DocumentAdditionFormat, Update},
@@ -21,8 +20,9 @@ use meilisearch_lib::{
 };
 use serde::Serialize;
 use serde_json::to_string;
+use snafu::prelude::*;
 use tokio::{runtime::Builder, sync::mpsc, task::LocalSet};
-use tokio_stream::Stream;
+use tokio_stream::wrappers::ReceiverStream;
 use tracing::{error, info};
 
 static mut MEILI_SEARCH: MaybeUninit<MeiliSearch> = MaybeUninit::uninit();
@@ -50,6 +50,11 @@ pub fn setup() {
                         .as_mut_ptr()
                         .write(setup_meilisearch(&opt).unwrap());
                 }
+
+                // 加快第一次检索
+                if let Some(meili) = get_meili() {
+                    let _ = meili.list_indexes();
+                }
             });
             rt.block_on(local);
         });
@@ -61,9 +66,9 @@ pub async fn add_documents<T: 'static + Serialize>(
     index_name: String,
     documents: &[T],
     primary_key: Option<String>,
-) -> Result<Task, IndexControllerError> {
+) -> Result<Task> {
     let update = Update::DocumentAddition {
-        payload: Box::new(doc2stream(documents).await),
+        payload: Box::new(doc2stream(documents).await?),
         primary_key,
         method: IndexDocumentsMethod::ReplaceDocuments,
         format: DocumentAdditionFormat::Json,
@@ -74,6 +79,7 @@ pub async fn add_documents<T: 'static + Serialize>(
         .unwrap()
         .register_update(index_name, update)
         .await
+        .context(AddDocument)
 }
 
 pub async fn search(
@@ -81,7 +87,7 @@ pub async fn search(
     keyword: String,
     offset: usize,
     limit: usize,
-) -> Result<SearchResult, IndexControllerError> {
+) -> Result<SearchResult> {
     let search_query = SearchQuery {
         q: Some(keyword),
         offset: Some(offset),
@@ -97,9 +103,14 @@ pub async fn search(
         highlight_post_tag: DEFAULT_HIGHLIGHT_POST_TAG(),
         highlight_pre_tag: DEFAULT_HIGHLIGHT_PRE_TAG(),
         crop_marker: DEFAULT_CROP_MARKER(),
+        matching_strategy: MatchingStrategy::All,
     };
 
-    get_meili().unwrap().search(index_name, search_query).await
+    get_meili()
+        .unwrap()
+        .search(index_name, search_query)
+        .await
+        .context(SearchDocument)
 }
 
 pub async fn existed(index_name: String, id: &str, timestamp: u64) -> bool {
@@ -118,6 +129,7 @@ pub async fn existed(index_name: String, id: &str, timestamp: u64) -> bool {
         highlight_post_tag: DEFAULT_HIGHLIGHT_POST_TAG(),
         highlight_pre_tag: DEFAULT_HIGHLIGHT_PRE_TAG(),
         crop_marker: DEFAULT_CROP_MARKER(),
+        matching_strategy: MatchingStrategy::All,
     };
     let result = get_meili().unwrap().search(index_name, search_query).await;
 
@@ -135,7 +147,7 @@ pub async fn existed(index_name: String, id: &str, timestamp: u64) -> bool {
 pub async fn index_finished(index_name: String) -> bool {
     let mut filter = TaskFilter::default();
     filter.filter_index(index_name);
-    filter.filter_fn(|task| {
+    filter.filter_fn(Box::new(|task| {
         if !task.is_finished() {
             match task.content {
                 TaskContent::DocumentAddition { .. } => true,
@@ -144,7 +156,7 @@ pub async fn index_finished(index_name: String) -> bool {
         } else {
             false
         }
-    });
+    }));
 
     let result = get_meili()
         .unwrap()
@@ -170,12 +182,36 @@ fn get_meili() -> Option<&'static MeiliSearch> {
     unsafe { Some(&*MEILI_SEARCH.as_ptr()) }
 }
 
-async fn doc2stream<T: Serialize>(
-    documents: &[T],
-) -> impl Stream<Item = Result<Bytes, PayloadError>> {
+async fn doc2stream<S>(
+    documents: &[S],
+) -> Result<ReceiverStream<core::result::Result<Bytes, PayloadError>>>
+where
+    S: Serialize,
+{
     let (snd, recv) = mpsc::channel(1);
-    snd.send(Ok(Bytes::from(to_string(documents).unwrap())))
-        .await
-        .unwrap();
-    tokio_stream::wrappers::ReceiverStream::new(recv)
+    snd.send(Ok(Bytes::from(
+        to_string(documents).context(EncodeDocuments)?,
+    )))
+    .await
+    .context(SendToChannel)?;
+    Ok(ReceiverStream::new(recv))
+}
+
+type Result<T> = core::result::Result<T, Error>;
+
+#[derive(Debug, Snafu)]
+pub enum Error {
+    #[snafu(display("无法编码索引文档"), context(suffix(false)))]
+    EncodeDocuments { source: serde_json::error::Error },
+
+    #[snafu(display("无法将待索引文档发送到队列"), context(suffix(false)))]
+    SendToChannel {
+        source: tokio::sync::mpsc::error::SendError<core::result::Result<Bytes, PayloadError>>,
+    },
+
+    #[snafu(display("添加索引文档失败"), context(suffix(false)))]
+    AddDocument { source: IndexControllerError },
+
+    #[snafu(display("检索文档失败"), context(suffix(false)))]
+    SearchDocument { source: IndexControllerError },
 }
