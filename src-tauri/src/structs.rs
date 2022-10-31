@@ -68,7 +68,6 @@ pub async fn is_support(dir_entry: &DirEntry) -> bool {
             let path = dir_entry.path();
             let extension = path.extension();
             if let Some(e) = extension {
-                let e = e.to_ascii_lowercase();
                 return is_plain(&e) || is_hyper(&e);
             }
         }
@@ -77,6 +76,7 @@ pub async fn is_support(dir_entry: &DirEntry) -> bool {
 }
 
 fn is_plain(extension: &OsStr) -> bool {
+    let extension = extension.to_ascii_lowercase();
     for e in PLAIN_FILE_TYPE {
         if e == extension {
             return true;
@@ -86,6 +86,7 @@ fn is_plain(extension: &OsStr) -> bool {
 }
 
 fn is_hyper(extension: &OsStr) -> bool {
+    let extension = extension.to_ascii_lowercase();
     for e in HYPER_FILE_TYPE {
         if e == extension {
             return true;

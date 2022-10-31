@@ -288,7 +288,7 @@ dependencies = [
 
 [[package]]
 name = "app"
-version = "3.6.0"
+version = "3.6.1"
 dependencies = [
  "actix-web",
  "anyhow",
