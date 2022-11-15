@@ -22,9 +22,14 @@ pub struct Docx {
 
 impl Docx {
     pub async fn new(dir_entry: &DirEntry) -> Result<Docx> {
-        ensure!(is_support(dir_entry).await, UnsupportedDocument);
-
         let path = dir_entry.path();
+
+        ensure!(
+            is_support(dir_entry).await,
+            UnsupportedDocument {
+                path: path.to_str().unwrap().to_string()
+            }
+        );
 
         let name = path.file_name().and_then(|s| s.to_str()).unwrap();
         let path_name = path.to_str().unwrap();
@@ -68,7 +73,7 @@ pub async fn is_support(dir_entry: &DirEntry) -> bool {
             let path = dir_entry.path();
             let extension = path.extension();
             if let Some(e) = extension {
-                return is_plain(&e) || is_hyper(&e);
+                return is_plain(e) || is_hyper(e);
             }
         }
     }
@@ -99,7 +104,7 @@ fn is_hyper(extension: &OsStr) -> bool {
 async fn get_file_timestamp(dir_entry: &DirEntry) -> Result<u64> {
     let path = dir_entry.path();
     let io_error = OpenOrReadDocument {
-        path: path.to_str().and_then(|s| Some(s.to_string())).unwrap(),
+        path: path.to_str().map(|s| s.to_string()).unwrap(),
     };
     let timestamp = dir_entry
         .metadata()
@@ -122,7 +127,7 @@ async fn get_file_timestamp(dir_entry: &DirEntry) -> Result<u64> {
 async fn read_docx_file(path: &str) -> Result<String> {
     info!("read_docx_file");
     let output = Command::new("pandoc")
-        .args(&[
+        .args([
             "-t",
             "plain",
             "--wrap=none",
@@ -169,8 +174,8 @@ type Result<T> = core::result::Result<T, Error>;
 
 #[derive(Debug, Snafu)]
 pub enum Error {
-    #[snafu(display("未支持的文档类型"), context(suffix(false)))]
-    UnsupportedDocument,
+    #[snafu(display("未支持的文档类型：{path}"), context(suffix(false)))]
+    UnsupportedDocument { path: String },
 
     #[snafu(
         display("该文档非 UTF-8 或者 GBK 编码：{path}"),
@@ -183,6 +188,7 @@ pub enum Error {
         path: String,
         source: std::io::Error,
     },
+
     #[snafu(
         display("Pandoc 无法将 word 文件转换成普通文本：{path}"),
         context(suffix(false))
@@ -191,6 +197,7 @@ pub enum Error {
         path: String,
         source: std::io::Error,
     },
+
     #[snafu(display("系统时间错误"), context(suffix(false)))]
     ComputeSystemTime,
 }

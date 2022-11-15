@@ -134,7 +134,7 @@ pub async fn existed(index_name: String, id: &str, timestamp: u64) -> bool {
     let result = get_meili().unwrap().search(index_name, search_query).await;
 
     if let Ok(r) = result {
-        if r.hits.len() == 0 {
+        if r.hits.is_empty() {
             return false;
         }
         let doc = &r.hits[0].document;
@@ -149,10 +149,7 @@ pub async fn index_finished(index_name: String) -> bool {
     filter.filter_index(index_name);
     filter.filter_fn(Box::new(|task| {
         if !task.is_finished() {
-            match task.content {
-                TaskContent::DocumentAddition { .. } => true,
-                _ => false,
-            }
+            matches!(task.content, TaskContent::DocumentAddition { .. })
         } else {
             false
         }
@@ -163,15 +160,10 @@ pub async fn index_finished(index_name: String) -> bool {
         .list_tasks(Some(filter), Some(1), None)
         .await;
     if let Ok(result) = result {
-        if result.len() == 0 {
-            return true;
-        } else {
-            info!("indexing task: {:?}", result[0]);
-            return false;
-        }
+        result.is_empty()
     } else {
         error!("{:?}", result);
-        return true;
+        true
     }
 }
 

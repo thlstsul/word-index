@@ -17,8 +17,8 @@ mod pandoc {
 
     use anyhow::Context;
     use cargo_toml::Manifest;
-    use sha1::{Digest, Sha1};
     use flate2::read::GzDecoder;
+    use sha1::{Digest, Sha1};
 
     pub fn setup_pandoc() {
         let cargo_manifest_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());

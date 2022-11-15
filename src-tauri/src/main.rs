@@ -149,7 +149,7 @@ fn open_file(path: String) -> Result<()> {
 #[cfg(target_family = "windows")]
 fn open_file_by_default_program(path: &str) -> Result<()> {
     Command::new("rundll32")
-        .args(["url.dll", "FileProtocolHandler", &path])
+        .args(["url.dll", "FileProtocolHandler", path])
         .output()?;
     Ok(())
 }
@@ -166,24 +166,28 @@ struct ApiError(String);
 
 impl From<config::Error> for ApiError {
     fn from(e: config::Error) -> Self {
+        error!("{}", e);
         Self(e.to_string())
     }
 }
 
 impl From<meilisearch::Error> for ApiError {
     fn from(e: meilisearch::Error) -> Self {
+        error!("{}", e);
         Self(e.to_string())
     }
 }
 
 impl From<structs::Error> for ApiError {
     fn from(e: structs::Error) -> Self {
+        error!("{}", e);
         Self(e.to_string())
     }
 }
 
 impl From<tauri::api::Error> for ApiError {
     fn from(e: tauri::api::Error) -> Self {
+        error!("{}", e);
         Self(e.to_string())
     }
 }
