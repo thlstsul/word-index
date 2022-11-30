@@ -1,7 +1,7 @@
 {
   "package": {
     "productName": "word-index",
-    "version": "3.6.1"
+    "version": "3.6.2"
   },
   "build": {
     "distDir": "../dist",
@@ -15,7 +15,10 @@
       "shell": {
         "sidecar": true,
         "scope": [
-          { "name": "bin/pandoc", "sidecar": true }
+          {
+            "name": "bin/pandoc",
+            "sidecar": true
+          }
         ]
       }
     },

@@ -53,7 +53,9 @@ pub fn setup() {
 
                 // 加快第一次检索
                 if let Some(meili) = get_meili() {
-                    let _ = meili.list_indexes();
+                    if let Ok(indexes) = meili.list_indexes().await {
+                        info!("索引列表：{:?}", indexes);
+                    }
                 }
             });
             rt.block_on(local);
