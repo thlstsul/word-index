@@ -1,11 +1,11 @@
 [package]
-name = "app"
+name = "word-index"
 version = "3.6.2"
 description = "word-index"
 authors = ["thelostsoul"]
 license = ""
 repository = ""
-default-run = "app"
+default-run = "word-index"
 edition = "2021"
 rust-version = "1.57"
 
@@ -44,6 +44,12 @@ tokio = { version = "1.17.0", features = ["rt"] }
 async-walkdir = "0.2.0"
 encoding = "0.2.33"
 snafu = { version = "0.7.2", features = ["backtraces"] }
+proc-macro2 = "1.0.47"
+syn = "1.0.105"
+quote = "1.0.21"
+
+[lib]
+proc-macro = true
 
 [features]
 # by default Tauri runs in production mode

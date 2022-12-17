@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 use snafu::prelude::*;
 use tokio::{fs::File, io::AsyncReadExt, process::Command};
 use tracing::{error, info, instrument};
+use word_index::CommandError;
 
 const PLAIN_FILE_TYPE: [&str; 2] = ["txt", "sql"];
 const HYPER_FILE_TYPE: [&str; 2] = ["docx", "md"];
@@ -172,7 +173,7 @@ async fn read_plain_file(path: &str) -> Result<String> {
 
 type Result<T> = core::result::Result<T, Error>;
 
-#[derive(Debug, Snafu)]
+#[derive(Debug, Snafu, CommandError)]
 pub enum Error {
     #[snafu(display("未支持的文档类型：{path}"), context(suffix(false)))]
     UnsupportedDocument { path: String },

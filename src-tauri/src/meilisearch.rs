@@ -24,6 +24,7 @@ use snafu::prelude::*;
 use tokio::{runtime::Builder, sync::mpsc, task::LocalSet};
 use tokio_stream::wrappers::ReceiverStream;
 use tracing::{error, info};
+use word_index::CommandError;
 
 static mut MEILI_SEARCH: MaybeUninit<MeiliSearch> = MaybeUninit::uninit();
 static INIT: Once = Once::new();
@@ -193,7 +194,7 @@ where
 
 type Result<T> = core::result::Result<T, Error>;
 
-#[derive(Debug, Snafu)]
+#[derive(Debug, Snafu, CommandError)]
 pub enum Error {
     #[snafu(display("无法编码索引文档"), context(suffix(false)))]
     EncodeDocuments { source: serde_json::error::Error },

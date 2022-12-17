@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 use snafu::prelude::*;
 use std::fs::File;
 use std::io::{BufReader, Write};
+use word_index::CommandError;
 
 const DB: &str = "word-index.db";
 
@@ -44,7 +45,7 @@ impl Config {
 
 type Result<T> = core::result::Result<T, Error>;
 
-#[derive(Debug, Snafu)]
+#[derive(Debug, Snafu, CommandError)]
 pub enum Error {
     #[snafu(display("无法解编配置文件：{path}"), context(suffix(false)))]
     DecodeConfigFile {

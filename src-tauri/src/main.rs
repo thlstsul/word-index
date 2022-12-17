@@ -8,7 +8,8 @@ use std::time::Duration;
 use crate::config::Config;
 use crate::meilisearch::{add_documents, existed, index_finished, search};
 use async_walkdir::{DirEntry, Filtering, WalkDir};
-use serde::Serialize;
+use command_result::CommandError;
+use command_result::Result;
 use serde_json::{json, Value};
 use structs::Docx;
 use tauri::api::process::Command;
@@ -18,6 +19,7 @@ use tokio_stream::StreamExt;
 use tracing::{error, info, instrument};
 use tracing_subscriber::fmt::time::OffsetTime;
 
+mod command_result;
 mod config;
 mod meilisearch;
 mod structs;
@@ -71,7 +73,7 @@ async fn index_doc_file(dir_path: String) -> Result<()> {
     loop {
         match entries.next().await {
             Some(Ok(entry)) => index_one(&entry).await,
-            Some(Err(e)) => return Err(ApiError(e.to_string())),
+            Some(Err(e)) => return Err(CommandError(e.to_string())),
             None => break,
         }
     }
@@ -121,7 +123,7 @@ async fn save_path(path: String) -> Result<()> {
     info!("save_path");
     let mut config = Config::load()?;
     if config.paths.contains(&path) {
-        return Err(ApiError(format!("{}\n索引路径已存在！", path)));
+        return Err(CommandError(format!("{}\n索引路径已存在！", path)));
     } else {
         config.paths.push(path);
         config.save()?;
@@ -157,37 +159,4 @@ fn open_file_by_default_program(path: &str) -> Result<()> {
 #[cfg(target_family = "unix")]
 fn open_file_by_default_program(path: &str) -> Result<()> {
     Err(ApiError(String::from("未适配！")))
-}
-
-type Result<T> = core::result::Result<T, ApiError>;
-
-#[derive(Debug, Serialize)]
-struct ApiError(String);
-
-impl From<config::Error> for ApiError {
-    fn from(e: config::Error) -> Self {
-        error!("{}", e);
-        Self(e.to_string())
-    }
-}
-
-impl From<meilisearch::Error> for ApiError {
-    fn from(e: meilisearch::Error) -> Self {
-        error!("{}", e);
-        Self(e.to_string())
-    }
-}
-
-impl From<structs::Error> for ApiError {
-    fn from(e: structs::Error) -> Self {
-        error!("{}", e);
-        Self(e.to_string())
-    }
-}
-
-impl From<tauri::api::Error> for ApiError {
-    fn from(e: tauri::api::Error) -> Self {
-        error!("{}", e);
-        Self(e.to_string())
-    }
 }
