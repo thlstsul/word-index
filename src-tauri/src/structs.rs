@@ -127,19 +127,21 @@ async fn get_file_timestamp(dir_entry: &DirEntry) -> Result<u64> {
 #[instrument]
 async fn read_docx_file(path: &str) -> Result<String> {
     info!("read_docx_file");
-    let output = Command::new("pandoc")
-        .args([
-            "-t",
-            "plain",
-            "--wrap=none",
-            "--markdown-headings=atx",
-            path,
-        ])
-        .output()
-        .await
-        .context(PandocConvert {
-            path: path.to_string(),
-        })?;
+    const CREATE_NO_WINDOW: u32 = 0x08000000;
+    let mut command = Command::new("pandoc");
+    let mut command = command.args([
+        "-t",
+        "plain",
+        "--wrap=none",
+        "--markdown-headings=atx",
+        path,
+    ]);
+    if cfg!(windows) {
+        command = command.creation_flags(CREATE_NO_WINDOW);
+    }
+    let output = command.output().await.context(PandocConvert {
+        path: path.to_string(),
+    })?;
 
     String::from_utf8(output.stdout).map_err(|e| {
         error!("读取文件{}失败：{}", path, e);

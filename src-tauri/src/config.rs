@@ -1,7 +1,9 @@
 use serde::{Deserialize, Serialize};
 use snafu::prelude::*;
-use std::fs::File;
-use std::io::{BufReader, Write};
+use tokio::{
+    fs::File,
+    io::{AsyncReadExt, AsyncWriteExt},
+};
 use word_index::CommandError;
 
 const DB: &str = "word-index.db";
@@ -14,30 +16,34 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn load() -> Result<Self> {
-        let file = File::open(DB);
-        match file {
-            Ok(f) => {
-                let reader = BufReader::new(f);
-                serde_json::from_reader(reader).context(DecodeConfigFile { path: DB })
+    pub async fn load() -> Result<Self> {
+        match File::open(DB).await {
+            Ok(mut file) => {
+                let mut buf = Vec::new();
+                file.read_to_end(&mut buf)
+                    .await
+                    .context(ReadConfigFile { path: DB })?;
+                serde_json::from_slice(&buf).context(DecodeConfigFile { path: DB })
             }
             Err(_) => Ok(Self::default()),
         }
     }
 
-    pub fn save(&self) -> Result<()> {
-        let mut file = File::options()
+    pub async fn save(&self) -> Result<()> {
+        let file = std::fs::File::options()
             .read(true)
             .write(true)
             .create(true)
             .truncate(true)
             .open(DB)
             .context(ReadConfigFile { path: DB })?;
+        let mut file = File::from_std(file);
         file.write_all(
             serde_json::to_string(self)
                 .context(EncodeConfig)?
                 .as_bytes(),
         )
+        .await
         .context(SaveConfigFile { path: DB })?;
         Ok(())
     }

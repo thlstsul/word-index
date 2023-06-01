@@ -121,12 +121,12 @@ async fn search_doc_file(keyword: String, offset: usize, limit: usize) -> Result
 #[instrument]
 async fn save_path(path: String) -> Result<()> {
     info!("save_path");
-    let mut config = Config::load()?;
+    let mut config = Config::load().await?;
     if config.paths.contains(&path) {
         return Err(CommandError(format!("{}\n索引路径已存在！", path)));
     } else {
         config.paths.push(path);
-        config.save()?;
+        config.save().await?;
     }
 
     Ok(())
@@ -137,7 +137,7 @@ async fn save_path(path: String) -> Result<()> {
 #[instrument]
 async fn get_paths() -> Result<Vec<String>> {
     info!("get_paths");
-    let config = Config::load()?;
+    let config = Config::load().await?;
     Ok(config.paths)
 }
 
@@ -148,7 +148,7 @@ fn open_file(path: String) -> Result<()> {
     open_file_by_default_program(&path)
 }
 
-#[cfg(target_family = "windows")]
+#[cfg(windows)]
 fn open_file_by_default_program(path: &str) -> Result<()> {
     Command::new("rundll32")
         .args(["url.dll", "FileProtocolHandler", path])
@@ -156,7 +156,7 @@ fn open_file_by_default_program(path: &str) -> Result<()> {
     Ok(())
 }
 
-#[cfg(target_family = "unix")]
+#[cfg(not(windows))]
 fn open_file_by_default_program(path: &str) -> Result<()> {
     Err(ApiError(String::from("未适配！")))
 }

@@ -1490,8 +1490,8 @@ dependencies = [
 
 [[package]]
 name = "filter-parser"
-version = "0.33.4"
-source = "git+https://github.com/meilisearch/milli.git?tag=v0.33.4#4fc6331cb6526c07f3137584564cfe3493fb25bd"
+version = "0.33.6"
+source = "git+https://github.com/meilisearch/milli.git?tag=v0.33.6#0998f6b3becacb8c88fe9cad0dc5b17b7fb287da"
 dependencies = [
  "nom",
  "nom_locate",
@@ -1509,8 +1509,8 @@ dependencies = [
 
 [[package]]
 name = "flatten-serde-json"
-version = "0.33.4"
-source = "git+https://github.com/meilisearch/milli.git?tag=v0.33.4#4fc6331cb6526c07f3137584564cfe3493fb25bd"
+version = "0.33.6"
+source = "git+https://github.com/meilisearch/milli.git?tag=v0.33.6#0998f6b3becacb8c88fe9cad0dc5b17b7fb287da"
 dependencies = [
  "serde_json",
 ]
@@ -2432,8 +2432,8 @@ dependencies = [
 
 [[package]]
 name = "json-depth-checker"
-version = "0.33.4"
-source = "git+https://github.com/meilisearch/milli.git?tag=v0.33.4#4fc6331cb6526c07f3137584564cfe3493fb25bd"
+version = "0.33.6"
+source = "git+https://github.com/meilisearch/milli.git?tag=v0.33.6#0998f6b3becacb8c88fe9cad0dc5b17b7fb287da"
 dependencies = [
  "serde_json",
 ]
@@ -2875,7 +2875,7 @@ checksum = "490cc448043f947bae3cbee9c203358d62dbee0db12107a74be5c30ccfd09771"
 
 [[package]]
 name = "meilisearch-auth"
-version = "0.29.1"
+version = "0.29.3"
 dependencies = [
  "enum-iterator 0.7.0",
  "hmac",
@@ -2892,7 +2892,7 @@ dependencies = [
 
 [[package]]
 name = "meilisearch-http"
-version = "0.29.1"
+version = "0.29.3"
 dependencies = [
  "actix-cors",
  "actix-web",
@@ -2953,7 +2953,7 @@ dependencies = [
 
 [[package]]
 name = "meilisearch-lib"
-version = "0.29.1"
+version = "0.29.3"
 dependencies = [
  "actix-web",
  "anyhow",
@@ -3008,7 +3008,7 @@ dependencies = [
 
 [[package]]
 name = "meilisearch-types"
-version = "0.29.1"
+version = "0.29.3"
 dependencies = [
  "actix-web",
  "serde",
@@ -3041,8 +3041,8 @@ dependencies = [
 
 [[package]]
 name = "milli"
-version = "0.33.4"
-source = "git+https://github.com/meilisearch/milli.git?tag=v0.33.4#4fc6331cb6526c07f3137584564cfe3493fb25bd"
+version = "0.33.6"
+source = "git+https://github.com/meilisearch/milli.git?tag=v0.33.6#0998f6b3becacb8c88fe9cad0dc5b17b7fb287da"
 dependencies = [
  "bimap",
  "bincode",
@@ -3593,7 +3593,7 @@ checksum = "478c572c3d73181ff3c2539045f6eb99e5491218eae919370993b890cdbdd98e"
 
 [[package]]
 name = "permissive-json-pointer"
-version = "0.29.1"
+version = "0.29.3"
 dependencies = [
  "serde_json",
 ]
