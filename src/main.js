@@ -6,7 +6,6 @@ import {
   Input,
   Pagination,
   Collapse,
-  Divider,
   Empty,
   BackTop,
 } from "ant-design-vue";
@@ -17,7 +16,6 @@ app.use(Button);
 app.use(Input);
 app.use(Pagination);
 app.use(Collapse);
-app.use(Divider);
 app.use(Empty);
 app.use(BackTop);
 app.mount("#app");

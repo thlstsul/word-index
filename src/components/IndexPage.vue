@@ -7,15 +7,13 @@
     @search="index"
   />
 
-  <a-divider />
-
   <index-path
     type="primary"
     v-for="path in paths"
     :key="path.value"
     :path="path.value"
     :loaded="path.loaded"
-    style="margin-bottom:10px;"
+    style="margin-top:10px;"
     block
   ></index-path>
 </template>
@@ -23,7 +21,7 @@
 import { ref, onMounted } from "vue";
 import { message } from "ant-design-vue";
 import { invoke } from "@tauri-apps/api/tauri";
-import IndexPath from "./IndexPath";
+import IndexPath from "./IndexPath.vue";
 
 export default {
   name: "IndexPage",

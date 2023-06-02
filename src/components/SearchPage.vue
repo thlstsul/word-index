@@ -1,5 +1,5 @@
 <template>
-  <div class="search_wrapper">
+  <div id="search_wrapper">
     <a-layout>
       <a-layout-header>
         <a-input-search
@@ -12,28 +12,34 @@
         />
       </a-layout-header>
       <a-layout-content>
-        <a-divider />
-        <a-empty v-if="docs.length == 0" />
-        <a-collapse
-          v-model:activeKey="activeDoc"
-          accordion
-        >
-          <a-collapse-panel
-            v-for="(doc, i) in docs"
-            :key="i"
-            :header="doc.name"
+        <div id="layout_content">
+          <a-empty
+            :description="null"
+            :image-style="{height: '100%', margin: '35px'}"
+            v-if="docs.length == 0"
+          />
+          <a-collapse
+            v-model:activeKey="activeDoc"
+            accordion
+            v-if="docs.length > 0"
           >
-            <a-back-top>
-              <div class="ant-back-top-inner">顶</div>
-            </a-back-top>
-            <a-button
-              type="primary"
-              @click="() => open_file(doc.path)"
-              block
-            >打开原文件</a-button>
-            <pre class="doc_content">{{doc.content}}</pre>
-          </a-collapse-panel>
-        </a-collapse>
+            <a-collapse-panel
+              v-for="(doc, i) in docs"
+              :key="i"
+              :header="doc.name"
+            >
+              <a-back-top>
+                <div id="ant-back-top-inner">顶</div>
+              </a-back-top>
+              <a-button
+                type="primary"
+                @click="() => open_file(doc.path)"
+                block
+              >打开原文件</a-button>
+              <pre id="doc_content">{{doc.content}}</pre>
+            </a-collapse-panel>
+          </a-collapse>
+        </div>
       </a-layout-content>
       <a-layout-footer>
         <a-pagination
@@ -115,11 +121,33 @@ async function search_doc_file(keyword, pageNum, pageSize) {
 }
 </script>
 <style scoped>
-.search_wrapper {
+.ant-layout-header {
+  padding: 0 0;
+  color: #fff;
+  background: #fff;
+}
+
+.ant-layout-content {
+  background: #fff;
+}
+
+.ant-layout-footer {
+  background: #fff;
+}
+
+.ant-input-group-wrapper {
+  vertical-align: middle;
+}
+
+#search_wrapper {
   padding: 24px;
 }
 
-.doc_content {
+#layout_content {
+  min-height: 250px;
+}
+
+#doc_content {
   font-family: "Microsoft YaHei";
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -128,7 +156,8 @@ async function search_doc_file(keyword, pageNum, pageSize) {
 .ant-back-top {
   bottom: 100px;
 }
-.ant-back-top-inner {
+
+#ant-back-top-inner {
   height: 40px;
   width: 40px;
   line-height: 40px;

@@ -1,7 +1,7 @@
 {
   "package": {
     "productName": "word-index",
-    "version": "3.6.4"
+    "version": "3.7.0"
   },
   "build": {
     "distDir": "../dist",
@@ -70,7 +70,7 @@
       {
         "title": "word index",
         "width": 800,
-        "height": 600,
+        "height": 500,
         "resizable": true,
         "fullscreen": false
       }
