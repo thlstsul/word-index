@@ -1,3 +1,4 @@
+use std::process::Output;
 use std::{ffi::OsStr, path::PathBuf, time::SystemTime};
 
 use async_walkdir::DirEntry;
@@ -127,19 +128,17 @@ async fn get_file_timestamp(dir_entry: &DirEntry) -> Result<u64> {
 #[instrument]
 async fn read_docx_file(path: &str) -> Result<String> {
     info!("read_docx_file");
-    const CREATE_NO_WINDOW: u32 = 0x08000000;
+
     let mut command = Command::new("pandoc");
-    let mut command = command.args([
+    let command = command.args([
         "-t",
         "plain",
         "--wrap=none",
         "--markdown-headings=atx",
         path,
     ]);
-    if cfg!(windows) {
-        command = command.creation_flags(CREATE_NO_WINDOW);
-    }
-    let output = command.output().await.context(PandocConvert {
+
+    let output = output(command).await.context(PandocConvert {
         path: path.to_string(),
     })?;
 
@@ -149,6 +148,17 @@ async fn read_docx_file(path: &str) -> Result<String> {
             path: path.to_string(),
         }
     })
+}
+
+#[cfg(windows)]
+async fn output(command: &mut Command) -> core::result::Result<Output, std::io::Error> {
+    const CREATE_NO_WINDOW: u32 = 0x08000000;
+    command.creation_flags(CREATE_NO_WINDOW).output().await
+}
+
+#[cfg(not(windows))]
+async fn output(command: &mut Command) -> core::result::Result<Output, std::io::Error> {
+    command.output().await
 }
 
 #[instrument]

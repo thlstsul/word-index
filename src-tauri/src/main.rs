@@ -12,7 +12,6 @@ use command_result::CommandError;
 use command_result::Result;
 use serde_json::{json, Value};
 use structs::Docx;
-use tauri::api::process::Command;
 use time::{macros::format_description, UtcOffset};
 use tokio::time::sleep;
 use tokio_stream::StreamExt;
@@ -150,6 +149,8 @@ fn open_file(path: String) -> Result<()> {
 
 #[cfg(windows)]
 fn open_file_by_default_program(path: &str) -> Result<()> {
+    use tauri::api::process::Command;
+
     Command::new("rundll32")
         .args(["url.dll", "FileProtocolHandler", path])
         .output()?;
@@ -158,5 +159,5 @@ fn open_file_by_default_program(path: &str) -> Result<()> {
 
 #[cfg(not(windows))]
 fn open_file_by_default_program(path: &str) -> Result<()> {
-    Err(ApiError(String::from("未适配！")))
+    Err(CommandError(String::from("未适配！")))
 }
