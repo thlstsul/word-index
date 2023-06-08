@@ -9,7 +9,14 @@ pub struct CommandError(pub String);
 
 impl From<tauri::api::Error> for CommandError {
     fn from(e: tauri::api::Error) -> Self {
-        error!("{}", e);
+        error!("{e}");
+        Self(e.to_string())
+    }
+}
+
+impl From<tokio::task::JoinError> for CommandError {
+    fn from(e: tokio::task::JoinError) -> Self {
+        error!("{e}");
         Self(e.to_string())
     }
 }

@@ -28,7 +28,7 @@ export default {
           loading.value = false;
         })
         .catch((e) => {
-          message.info(e);
+          message.error(e);
         });
     };
 

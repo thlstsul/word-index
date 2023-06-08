@@ -41,7 +41,7 @@ fn main() {
 
     tauri::Builder::default()
         .setup(|_app| {
-            meilisearch::setup();
+            meilisearch::setup(Some(INDEX_NAME.to_string()));
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -71,7 +71,9 @@ async fn index_doc_file(dir_path: String) -> Result<()> {
     });
     loop {
         match entries.next().await {
-            Some(Ok(entry)) => index_one(&entry).await,
+            Some(Ok(entry)) => {
+                tokio::spawn(index_one(entry)).await?;
+            }
             Some(Err(e)) => return Err(CommandError(e.to_string())),
             None => break,
         }
@@ -85,27 +87,32 @@ async fn index_doc_file(dir_path: String) -> Result<()> {
     Ok(())
 }
 
-async fn index_one(entry: &DirEntry) {
-    let docx = Docx::new(entry).await;
+async fn index_one(entry: DirEntry) {
+    let docx = Docx::new(&entry).await;
     match docx {
         Ok(mut docx) => {
             if !existed(INDEX_NAME.to_string(), docx.get_id(), docx.get_timestamp()).await {
                 if let Err(e) = docx.set_content().await {
-                    error!("{}", e);
+                    error!("{e}");
                 } else if let Err(e) = add_documents(INDEX_NAME.to_string(), &[docx], None).await {
-                    error!("{}", e)
+                    error!("{e}");
                 }
             }
         }
-        Err(e) => error!("{}", e),
+        Err(e) => error!("{e}"),
     }
 }
 
 /// 搜索文件，支持分页
 #[tauri::command]
 #[instrument]
-async fn search_doc_file(keyword: String, offset: usize, limit: usize) -> Result<Value> {
-    let results = search(INDEX_NAME.to_string(), keyword, offset, limit).await?;
+async fn search_doc_file(
+    keyword: String,
+    offset: usize,
+    limit: usize,
+    classes: Option<Vec<String>>,
+) -> Result<Value> {
+    let results = search(INDEX_NAME.to_string(), keyword, offset, limit, classes).await?;
 
     let mut ret = json!({});
     ret["total"] = json!(results.estimated_total_hits);
@@ -122,7 +129,7 @@ async fn save_path(path: String) -> Result<()> {
     info!("save_path");
     let mut config = Config::load().await?;
     if config.paths.contains(&path) {
-        return Err(CommandError(format!("{}\n索引路径已存在！", path)));
+        return Err(CommandError(format!("{path}\n索引路径已存在！")));
     } else {
         config.paths.push(path);
         config.save().await?;

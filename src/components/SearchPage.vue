@@ -2,14 +2,29 @@
   <div id="search_wrapper">
     <a-layout>
       <a-layout-header>
-        <a-input-search
-          id="query"
-          v-model:value="value"
-          placeholder="关键字"
-          enter-button="搜索"
-          size="large"
-          @search="search"
-        />
+        <a-input-group size="large" compact>
+          <a-select
+            v-model:value="classes"
+            mode="multiple"
+            placeholder="文档类型"
+            size="large"
+            style="width: 40%"
+          >
+            <a-select-option value="docx">docx</a-select-option>
+            <a-select-option value="sql">sql</a-select-option>
+            <a-select-option value="md">md</a-select-option>
+            <a-select-option value="txt">txt</a-select-option>
+          </a-select>
+          <a-input-search
+            id="query"
+            v-model:value="keyword"
+            placeholder="关键字"
+            enter-button="搜索"
+            size="large"
+            @search="search"
+            style="width: 60%"
+          />
+        </a-input-group>
       </a-layout-header>
       <a-layout-content>
         <div id="layout_content">
@@ -63,7 +78,8 @@ import { invoke } from "@tauri-apps/api/tauri";
 export default {
   name: "SearchPage",
   setup() {
-    const value = ref("");
+    const classes = ref(["docx", "sql", "md", "txt"]);
+    const keyword = ref("");
     const current = ref(1);
     const total = ref(0);
     const docs = ref([]);
@@ -71,37 +87,38 @@ export default {
     const pageSize = ref(5);
 
     const search = () => {
-      search_doc_file(value.value, 1, pageSize.value)
+      search_doc_file(classes.value, keyword.value, 1, pageSize.value)
         .then((res) => {
           docs.value = res.results;
           total.value = res.total;
           current.value = 1;
         })
         .catch((err) => {
-          message.info(err);
+          message.error(err);
         });
     };
 
     const selectPage = (page) => {
-      search_doc_file(value.value, page, pageSize.value)
+      search_doc_file(classes.value, keyword.value, page, pageSize.value)
         .then((res) => {
           docs.value = res.results;
           total.value = res.total;
           current.value = page;
         })
         .catch((err) => {
-          message.info(err);
+          message.error(err);
         });
     };
 
     const open_file = (path) => {
       invoke("open_file", { path }).catch((e) => {
-        message.info(e);
+        message.error(e);
       });
     };
 
     return {
-      value,
+      classes,
+      keyword,
       current,
       total,
       pageSize,
@@ -114,10 +131,10 @@ export default {
   },
 };
 
-async function search_doc_file(keyword, pageNum, pageSize) {
+async function search_doc_file(classes, keyword, pageNum, pageSize) {
   const offset = (pageNum - 1) * pageSize;
   const limit = pageSize;
-  return invoke("search_doc_file", { keyword, offset, limit });
+  return invoke("search_doc_file", { classes, keyword, offset, limit });
 }
 </script>
 <style scoped>

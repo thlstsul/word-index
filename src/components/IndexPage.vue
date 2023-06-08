@@ -37,7 +37,7 @@ export default {
           paths.value.push({ value: value.value, loaded: false });
         })
         .catch((err) => {
-          message.info(err);
+          message.error(err);
         });
     };
 
@@ -51,7 +51,7 @@ export default {
           paths.value = pathsTmp;
         })
         .catch((err) => {
-          message.info(err);
+          message.error(err);
         });
     });
 

@@ -20,11 +20,13 @@ pub struct Docx {
     path: String,
     content: String,
     timestamp: u64,
+    class: String,
 }
 
 impl Docx {
     pub async fn new(dir_entry: &DirEntry) -> Result<Docx> {
         let path = dir_entry.path();
+        let extension = path.extension();
 
         ensure!(
             is_support(dir_entry).await,
@@ -44,6 +46,11 @@ impl Docx {
             path: path_name.to_string(),
             content: String::new(),
             timestamp,
+            class: extension
+                .and_then(|s| s.to_str())
+                .unwrap_or("")
+                .to_owned()
+                .to_lowercase(),
         })
     }
 
@@ -116,7 +123,7 @@ async fn get_file_timestamp(dir_entry: &DirEntry) -> Result<u64> {
         .context(io_error.clone())?
         .duration_since(SystemTime::UNIX_EPOCH)
         .map_err(|e| {
-            error!("取文件时间戳失败：{}", e);
+            error!("取文件时间戳失败：{e}");
             Error::ComputeSystemTime
         })?
         .as_secs();
@@ -143,7 +150,7 @@ async fn read_docx_file(path: &str) -> Result<String> {
     })?;
 
     String::from_utf8(output.stdout).map_err(|e| {
-        error!("读取文件{}失败：{}", path, e);
+        error!("读取文件{path}失败：{e}");
         Error::UnsupportedEncoding {
             path: path.to_string(),
         }
@@ -165,7 +172,7 @@ async fn output(command: &mut Command) -> core::result::Result<Output, std::io::
 async fn read_plain_file(path: &str) -> Result<String> {
     match tokio::fs::read_to_string(path).await {
         Err(e) => {
-            error!("读取文件{}失败：{}", path, e);
+            error!("读取文件{path}失败：{e}");
             let io_error = OpenOrReadDocument {
                 path: path.to_string(),
             };
@@ -173,7 +180,7 @@ async fn read_plain_file(path: &str) -> Result<String> {
             let mut buf = Vec::new();
             file.read_to_end(&mut buf).await.context(io_error.clone())?;
             GBK.decode(&buf, DecoderTrap::Strict).map_err(|e| {
-                error!("读取文件{}失败：{}", path, e);
+                error!("读取文件{path}失败：{e}");
                 Error::UnsupportedEncoding {
                     path: path.to_string(),
                 }

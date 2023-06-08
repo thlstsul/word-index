@@ -6,11 +6,11 @@ use clap::Parser;
 use meilisearch_http::{setup_meilisearch, Opt};
 use meilisearch_lib::{
     index::{
-        MatchingStrategy, SearchQuery, SearchResult, DEFAULT_CROP_LENGTH, DEFAULT_CROP_MARKER,
-        DEFAULT_HIGHLIGHT_POST_TAG, DEFAULT_HIGHLIGHT_PRE_TAG,
+        MatchingStrategy, SearchQuery, SearchResult, Settings, DEFAULT_CROP_LENGTH,
+        DEFAULT_CROP_MARKER, DEFAULT_HIGHLIGHT_POST_TAG, DEFAULT_HIGHLIGHT_PRE_TAG,
     },
     index_controller::{error::IndexControllerError, DocumentAdditionFormat, Update},
-    milli::update::IndexDocumentsMethod,
+    milli::update::{IndexDocumentsMethod, Setting},
     options::MaxMemory,
     tasks::{
         task::{Task, TaskContent},
@@ -19,7 +19,7 @@ use meilisearch_lib::{
     MeiliSearch,
 };
 use serde::Serialize;
-use serde_json::to_string;
+use serde_json::{to_string, Value};
 use snafu::prelude::*;
 use tokio::{runtime::Builder, sync::mpsc, task::LocalSet};
 use tokio_stream::wrappers::ReceiverStream;
@@ -31,7 +31,7 @@ static INIT: Once = Once::new();
 
 const API_KEY: &str = "thlstsul";
 
-pub fn setup() {
+pub fn setup(index_name: Option<String>) {
     info!("meilisearch启动开始……");
     INIT.call_once(|| {
         let rt = Builder::new_current_thread().enable_all().build().unwrap();
@@ -39,7 +39,7 @@ pub fn setup() {
         std::thread::spawn(move || {
             let local = LocalSet::new();
             // setup_meilisearch包含tokio::task::spawn_local操作，其只能运行于LocalSet设置的local context
-            local.spawn_local(async {
+            local.spawn_local(async move {
                 let mut opt = Opt::parse();
                 // 初始化 --max-indexing-memory=1024Mb --db-path={} --master-key={}
                 opt.indexer_options.max_indexing_memory = MaxMemory::from_str("1024Mb").unwrap();
@@ -55,7 +55,25 @@ pub fn setup() {
                 // 加快第一次检索
                 if let Some(meili) = get_meili() {
                     if let Ok(indexes) = meili.list_indexes().await {
-                        info!("索引列表：{:?}", indexes);
+                        info!("索引列表：{indexes:?}");
+                        if indexes.is_empty() && index_name.is_some() {
+                            let mut filters = BTreeSet::new();
+                            filters.insert("class".to_string());
+                            info!("创建索引 with filter: {filters:?}");
+                            let settings = Settings {
+                                filterable_attributes: Setting::Set(filters),
+                                ..Default::default()
+                            };
+                            let update = Update::Settings {
+                                settings,
+                                is_deletion: false,
+                                allow_index_creation: true,
+                            };
+                            meili
+                                .register_update(index_name.unwrap(), update)
+                                .await
+                                .unwrap();
+                        }
                     }
                 }
             });
@@ -90,7 +108,12 @@ pub async fn search(
     keyword: String,
     offset: usize,
     limit: usize,
+    classes: Option<Vec<String>>,
 ) -> Result<SearchResult> {
+    let filter = classes.map(|v| {
+        let value: Vec<String> = v.iter().map(|c| format!("class = {c}")).collect();
+        Value::String(value.join(" OR "))
+    });
     let search_query = SearchQuery {
         q: Some(keyword),
         offset: Some(offset),
@@ -100,7 +123,7 @@ pub async fn search(
         crop_length: DEFAULT_CROP_LENGTH(),
         attributes_to_highlight: None,
         show_matches_position: false,
-        filter: None,
+        filter,
         sort: None,
         facets: None,
         highlight_post_tag: DEFAULT_HIGHLIGHT_POST_TAG(),
@@ -165,7 +188,7 @@ pub async fn index_finished(index_name: String) -> bool {
     if let Ok(result) = result {
         result.is_empty()
     } else {
-        error!("{:?}", result);
+        error!("{result:?}");
         true
     }
 }

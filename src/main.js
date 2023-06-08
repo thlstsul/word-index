@@ -8,7 +8,14 @@ import {
   Collapse,
   Empty,
   BackTop,
+  message,
 } from "ant-design-vue";
+
+message.config({
+  top: "0px",
+  duration: 2,
+  maxCount: 3,
+});
 
 const app = createApp(App);
 app.use(Drawer);
