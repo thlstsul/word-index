@@ -1,6 +1,6 @@
 <template>
   <a-drawer
-    v-model:visible="visible"
+    :visible="visible"
     class="custom-class"
     placement="right"
     :closable="false"

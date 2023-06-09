@@ -2,9 +2,12 @@
   <div id="search_wrapper">
     <a-layout>
       <a-layout-header>
-        <a-input-group size="large" compact>
+        <a-input-group
+          size="large"
+          compact
+        >
           <a-select
-            v-model:value="classes"
+            :value="classes"
             mode="multiple"
             placeholder="文档类型"
             size="large"
@@ -17,7 +20,7 @@
           </a-select>
           <a-input-search
             id="query"
-            v-model:value="keyword"
+            :value="keyword"
             placeholder="关键字"
             enter-button="搜索"
             size="large"
@@ -31,29 +34,35 @@
           <a-empty
             :description="null"
             :image-style="{height: '100%', margin: '35px'}"
-            v-if="docs.length == 0"
+            v-if="docs.length == 0 && !loading"
           />
-          <a-collapse
-            v-model:activeKey="activeDoc"
-            accordion
-            v-if="docs.length > 0"
+          <a-skeleton
+            :loading="loading"
+            active
+            :paragraph="{ rows: 4 }"
+            v-if="docs.length > 0 || loading"
           >
-            <a-collapse-panel
-              v-for="(doc, i) in docs"
-              :key="i"
-              :header="doc.name"
+            <a-collapse
+              :activeKey="activeDoc"
+              accordion
             >
-              <a-back-top>
-                <div id="ant-back-top-inner">顶</div>
-              </a-back-top>
-              <a-button
-                type="primary"
-                @click="() => open_file(doc.path)"
-                block
-              >打开原文件</a-button>
-              <pre id="doc_content">{{doc.content}}</pre>
-            </a-collapse-panel>
-          </a-collapse>
+              <a-collapse-panel
+                v-for="(doc, i) in docs"
+                :key="i"
+                :header="doc.name"
+              >
+                <a-back-top>
+                  <div id="ant-back-top-inner">顶</div>
+                </a-back-top>
+                <a-button
+                  type="primary"
+                  @click="() => open_file(doc.path)"
+                  block
+                >打开原文件</a-button>
+                <pre id="doc_content">{{doc.content}}</pre>
+              </a-collapse-panel>
+            </a-collapse>
+          </a-skeleton>
         </div>
       </a-layout-content>
       <a-layout-footer>
@@ -85,13 +94,16 @@ export default {
     const docs = ref([]);
     const activeDoc = ref([]);
     const pageSize = ref(5);
+    const loading = ref(false);
 
     const search = () => {
+      loading.value = true;
       search_doc_file(classes.value, keyword.value, 1, pageSize.value)
         .then((res) => {
           docs.value = res.results;
           total.value = res.total;
           current.value = 1;
+          loading.value = false;
         })
         .catch((err) => {
           message.error(err);
@@ -99,11 +111,13 @@ export default {
     };
 
     const selectPage = (page) => {
+      loading.value = true;
       search_doc_file(classes.value, keyword.value, page, pageSize.value)
         .then((res) => {
           docs.value = res.results;
           total.value = res.total;
           current.value = page;
+          loading.value = false;
         })
         .catch((err) => {
           message.error(err);
@@ -127,6 +141,7 @@ export default {
       search,
       selectPage,
       open_file,
+      loading,
     };
   },
 };

@@ -8,6 +8,7 @@ import {
   Collapse,
   Empty,
   BackTop,
+  Skeleton,
   message,
 } from "ant-design-vue";
 
@@ -25,4 +26,5 @@ app.use(Pagination);
 app.use(Collapse);
 app.use(Empty);
 app.use(BackTop);
+app.use(Skeleton);
 app.mount("#app");

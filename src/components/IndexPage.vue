@@ -1,6 +1,6 @@
 <template>
   <a-input-search
-    v-model:value="value"
+    :value="value"
     placeholder="word文件路径"
     enter-button="索引"
     size="large"
