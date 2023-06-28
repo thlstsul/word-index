@@ -1,6 +1,6 @@
 <template>
   <a-input-search
-    :value="value"
+    v-model:value="value"
     placeholder="word文件路径"
     enter-button="索引"
     size="large"
@@ -32,6 +32,9 @@ export default {
     const value = ref("");
     const paths = ref([]);
     const index = () => {
+      if (value.value == null && value.value == "") {
+        return;
+      }
       save_path(value.value)
         .then(() => {
           paths.value.push({ value: value.value, loaded: false });

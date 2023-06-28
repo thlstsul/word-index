@@ -7,7 +7,7 @@
           compact
         >
           <a-select
-            :value="classes"
+            v-model:value="classes"
             mode="multiple"
             placeholder="文档类型"
             size="large"
@@ -20,7 +20,7 @@
           </a-select>
           <a-input-search
             id="query"
-            :value="keyword"
+            v-model:value="keyword"
             placeholder="关键字"
             enter-button="搜索"
             size="large"
