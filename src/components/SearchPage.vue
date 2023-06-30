@@ -43,7 +43,7 @@
             v-if="docs.length > 0 || loading"
           >
             <a-collapse
-              :activeKey="activeDoc"
+              v-model:activeKey="activeDoc"
               accordion
             >
               <a-collapse-panel
