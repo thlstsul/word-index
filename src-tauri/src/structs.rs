@@ -6,6 +6,7 @@ use encoding::all::GBK;
 use encoding::{DecoderTrap, Encoding};
 use serde::{Deserialize, Serialize};
 use snafu::prelude::*;
+use tantivy_macro::Schema;
 use tokio::{fs::File, io::AsyncReadExt, process::Command};
 use tracing::{error, info, instrument};
 use word_index::CommandError;
@@ -13,14 +14,28 @@ use word_index::CommandError;
 const PLAIN_FILE_TYPE: [&str; 2] = ["txt", "sql"];
 const HYPER_FILE_TYPE: [&str; 2] = ["docx", "md"];
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(Serialize)]
+pub struct SearchFruit {
+    pub results: Vec<Docx>,
+    pub total: usize,
+    pub limit: usize,
+    pub offset: usize,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, Schema)]
 pub struct Docx {
-    id: String,
-    name: String,
-    path: String,
-    content: String,
-    timestamp: u64,
-    class: String,
+    #[field(fast)]
+    pub id: String,
+    #[field(stored, tokenized)]
+    pub name: String,
+    #[field(stored)]
+    pub path: String,
+    #[field(stored, tokenized)]
+    pub content: String,
+    #[field(indexed, fast)]
+    pub timestamp: u64,
+    #[field(fast)]
+    pub class: String,
 }
 
 impl Docx {

@@ -45,6 +45,7 @@ impl Config {
         )
         .await
         .context(SaveConfigFile { path: DB })?;
+
         Ok(())
     }
 }

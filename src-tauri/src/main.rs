@@ -3,27 +3,21 @@
     windows_subsystem = "windows"
 )]
 
-use std::time::Duration;
-
 use crate::config::Config;
-use crate::meilisearch::{add_documents, existed, index_finished, search};
-use async_walkdir::{DirEntry, Filtering, WalkDir};
 use command_result::CommandError;
 use command_result::Result;
-use serde_json::{json, Value};
-use structs::Docx;
+use search::SearchState;
+use structs::SearchFruit;
+use tauri::Manager;
+use tauri::State;
 use time::{macros::format_description, UtcOffset};
-use tokio::time::sleep;
-use tokio_stream::StreamExt;
-use tracing::{error, info, instrument};
+use tracing::{info, instrument};
 use tracing_subscriber::fmt::time::OffsetTime;
 
 mod command_result;
 mod config;
-mod meilisearch;
+mod search;
 mod structs;
-
-const INDEX_NAME: &str = "WORD-INDEX";
 
 fn main() {
     let file_appender = tracing_appender::rolling::never(".", "word-index.log");
@@ -40,8 +34,9 @@ fn main() {
         .init();
 
     tauri::Builder::default()
-        .setup(|_app| {
-            meilisearch::setup(Some(INDEX_NAME.to_string()));
+        .setup(|app| {
+            let state = SearchState::new();
+            app.manage(state);
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -57,69 +52,22 @@ fn main() {
 
 /// 为指定路径的文件创建索引
 #[tauri::command]
-#[instrument]
-async fn index_doc_file(dir_path: String) -> Result<()> {
-    let mut entries = WalkDir::new(dir_path).filter(|entry| async move {
-        if let Some(true) = entry
-            .path()
-            .file_name()
-            .map(|f| f.to_string_lossy().starts_with('.'))
-        {
-            return Filtering::IgnoreDir;
-        }
-        Filtering::Continue
-    });
-    loop {
-        match entries.next().await {
-            Some(Ok(entry)) => {
-                tokio::spawn(index_one(entry)).await?;
-            }
-            Some(Err(e)) => return Err(CommandError(e.to_string())),
-            None => break,
-        }
-    }
-
-    // 监控索引task，直到索引完成
-    while !index_finished(INDEX_NAME.to_string()).await {
-        sleep(Duration::from_millis(500)).await;
-    }
-
+async fn index_doc_file(dir_path: String, state: State<'_, SearchState>) -> Result<()> {
+    state.index(dir_path).await?;
     Ok(())
-}
-
-async fn index_one(entry: DirEntry) {
-    let docx = Docx::new(&entry).await;
-    match docx {
-        Ok(mut docx) => {
-            if !existed(INDEX_NAME.to_string(), docx.get_id(), docx.get_timestamp()).await {
-                if let Err(e) = docx.set_content().await {
-                    error!("{e}");
-                } else if let Err(e) = add_documents(INDEX_NAME.to_string(), &[docx], None).await {
-                    error!("{e}");
-                }
-            }
-        }
-        Err(e) => error!("{e}"),
-    }
 }
 
 /// 搜索文件，支持分页
 #[tauri::command]
-#[instrument]
 async fn search_doc_file(
     keyword: String,
     offset: usize,
     limit: usize,
     classes: Option<Vec<String>>,
-) -> Result<Value> {
-    let results = search(INDEX_NAME.to_string(), keyword, offset, limit, classes).await?;
-
-    let mut ret = json!({});
-    ret["total"] = json!(results.estimated_total_hits);
-    ret["offset"] = json!(results.offset);
-    ret["limit"] = json!(results.limit);
-    ret["results"] = json!(results.hits);
-    Ok(ret)
+    state: State<'_, SearchState>,
+) -> Result<SearchFruit> {
+    let fruit = state.search(keyword, offset, limit, classes)?;
+    Ok(fruit)
 }
 
 /// 保存索引路径

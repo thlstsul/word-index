@@ -1,10 +1,6 @@
 # word-index
-该程序用于检索word文件，meilisearch提供检索能力，pandoc提供解析能力
+该程序用于检索word文件，tantivy提供检索能力，pandoc提供解析能力
 
-## Prepare
-```
-git submodule update
-```
 
 ## Project setup
 ```

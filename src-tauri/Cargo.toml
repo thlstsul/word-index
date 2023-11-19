@@ -1,6 +1,6 @@
 [package]
 name = "word-index"
-version = "3.8.0"
+version = "4.0.0"
 description = "word-index"
 authors = ["thelostsoul"]
 license = ""
@@ -28,8 +28,6 @@ flate2 = "1.0.24"
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "1.3", features = ["api-all"] }
-meilisearch-lib = { path = "meilisearch/meilisearch-lib" }
-meilisearch-http = { path = "meilisearch/meilisearch-http", features = [], default-features = false }
 tracing = "0.1.32"
 tracing-subscriber = { version = "0.3.10", features = ["fmt", "local-time"] }
 md5 = "0.7.0"
@@ -38,15 +36,18 @@ time = { version = "0.3.9", features = ["std", "macros"] }
 clap = { version = "3.1.6", features = ["derive", "env"] }
 byte-unit = { version = "4.0.14", default-features = false, features = ["std"] }
 tokio-stream = "0.1.8"
-actix-web = { version = "4.0.1", default-features = false }
 bytes = "1.1.0"
-tokio = { version = "1.17.0", features = ["rt"] }
+tokio = { version = "1.33.0", features = ["rt", "process"] }
 async-walkdir = "0.2.0"
 encoding = "0.2.33"
 snafu = { version = "0.7.2", features = ["backtraces"] }
-proc-macro2 = "1.0.47"
-syn = "1.0.105"
-quote = "1.0.21"
+proc-macro2 = "1.0.69"
+tantivy = "0.21.0"
+tantivy-jieba = "0.10.0"
+tantivy-macro = "0.1.0"
+syn = "2.0.38"
+quote = "1.0.33"
+log-error = "0.1.1"
 
 [lib]
 proc-macro = true
