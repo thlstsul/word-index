@@ -9,12 +9,12 @@ yarn install
 
 ### Compiles and hot-reloads for development
 ```
-yarn tauri:serve
+yarn tauri serve
 ```
 
 ### Compiles and minifies for production
 ```
-yarn tauri:build
+yarn tauri build
 ```
 
 ### Lints and fixes files
