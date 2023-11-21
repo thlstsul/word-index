@@ -32,9 +32,6 @@ jobs:
         with:
           toolchain: stable
 
-      - name: use old rust version temporary
-        run: rustup default 1.73.0
-
       - name: install dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-latest'
         run: |
