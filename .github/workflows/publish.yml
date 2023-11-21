@@ -25,12 +25,15 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v1
         with:
-          node-version: 16
+          node-version: 20
 
       - name: install Rust stable
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+
+      - name: use old rust version temporary
+        run: rustup default 1.73.0
 
       - name: install dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-latest'
@@ -41,12 +44,12 @@ jobs:
       - name: install app dependencies and build it（tauri-action always 'yarn []', has not solve）
         run: yarn && yarn build
 
-      - uses: tauri-apps/tauri-action@v0.3
+      - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
-          releaseName: v__VERSION__
-          releaseBody: "See the assets to download this version and install."
-          releaseDraft: false
+          tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
+          releaseName: 'App v__VERSION__'
+          releaseBody: 'See the assets to download this version and install.'
+          releaseDraft: true
           prerelease: false
