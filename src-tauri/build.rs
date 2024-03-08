@@ -1,8 +1,6 @@
-use pandoc::setup_pandoc;
-
 fn main() {
     #[cfg(feature = "pandoc")]
-    setup_pandoc();
+    pandoc::setup_pandoc();
 
     tauri_build::build();
 }

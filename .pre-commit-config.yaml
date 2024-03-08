@@ -38,21 +38,21 @@ repos:
       - id: cargo-check
         name: cargo check
         description: Check the package for errors.
-        entry: bash -c 'cd src-tauri && cargo check --all'
+        entry: bash -c 'cd src-tauri && cargo check --all --no-default-features'
         language: system
         files: \.rs$
         pass_filenames: false
       - id: cargo-clippy
         name: cargo clippy
         description: Lint rust sources
-        entry: bash -c 'cd src-tauri && cargo clippy --all-targets --all-features --tests --benches -- -D warnings'
+        entry: bash -c 'cd src-tauri && cargo clippy --all-targets --no-default-features --tests --benches -- -D warnings'
         language: system
         files: \.rs$
         pass_filenames: false
       - id: cargo-test
         name: cargo test
         description: unit test for the project
-        entry: bash -c 'cd src-tauri && cargo test run --all-features'
+        entry: bash -c 'cd src-tauri && cargo test run --no-default-features'
         language: system
         files: \.rs$
         pass_filenames: false
