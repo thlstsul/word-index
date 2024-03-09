@@ -113,17 +113,16 @@ impl SearchState {
         limit: usize,
         classes: Option<Vec<String>>,
     ) -> Result<SearchFruit> {
-        let filter = if !keyword.is_empty() {
-            let filter = format!("name:{} OR content:{}", keyword, keyword);
-            match classes {
-                Some(classes) if !classes.is_empty() => {
-                    format!("({}) AND class:IN [{}]", filter, classes.join(" "))
-                }
-                _ => filter,
-            }
+        let mut filter = if !keyword.is_empty() {
+            format!("name:{} OR content:{}", keyword, keyword)
         } else {
             String::from("*")
         };
+        if let Some(classes) = classes {
+            if !classes.is_empty() {
+                filter = format!("({}) AND class:IN [{}]", filter, classes.join(" "));
+            }
+        }
 
         let searcher = self.reader.searcher();
         let query = self.parser.parse_query(&filter).context(SearchParser)?;
