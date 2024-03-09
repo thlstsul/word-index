@@ -17,15 +17,14 @@ pub struct Config {
 
 impl Config {
     pub async fn load() -> Result<Self> {
-        match File::open(DB).await {
-            Ok(mut file) => {
-                let mut buf = Vec::new();
-                file.read_to_end(&mut buf)
-                    .await
-                    .context(ReadConfigFile { path: DB })?;
-                serde_json::from_slice(&buf).context(DecodeConfigFile { path: DB })
-            }
-            Err(_) => Ok(Self::default()),
+        if let Ok(mut file) = File::open(DB).await {
+            let mut buf = Vec::new();
+            file.read_to_end(&mut buf)
+                .await
+                .context(ReadConfigFile { path: DB })?;
+            serde_json::from_slice(&buf).context(DecodeConfigFile { path: DB })
+        } else {
+            Ok(Self::default())
         }
     }
 

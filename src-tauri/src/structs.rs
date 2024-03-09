@@ -90,15 +90,18 @@ impl Docx {
 }
 
 pub async fn is_support(dir_entry: &DirEntry) -> bool {
-    if let Ok(file_type) = dir_entry.file_type().await {
+    if let Ok(file_type) = dir_entry.file_type().await.inspect_err(|e| error!("{e}")) {
+        if !file_type.is_file() {
+            return false;
+        }
         let file_name = dir_entry.file_name();
         let file_name = file_name.to_str();
-        if file_type.is_file() && file_name.is_some() && !file_name.unwrap().starts_with("~$") {
-            let path = dir_entry.path();
-            let extension = path.extension();
-            if let Some(e) = extension {
-                return is_plain(e) || is_hyper(e);
-            }
+        if matches!(file_name, Some(name) if name.starts_with("~$")) {
+            return false;
+        }
+        let path = dir_entry.path();
+        if let Some(e) = path.extension() {
+            return is_plain(e) || is_hyper(e);
         }
     }
     false
@@ -128,7 +131,7 @@ fn is_hyper(extension: &OsStr) -> bool {
 async fn get_file_timestamp(dir_entry: &DirEntry) -> Result<u64> {
     let path = dir_entry.path();
     let io_error = OpenOrReadDocument {
-        path: path.to_str().map(|s| s.to_string()).unwrap(),
+        path: path.to_str().map(|s| s.to_string()).unwrap_or_default(),
     };
     let timestamp = dir_entry
         .metadata()
@@ -137,10 +140,8 @@ async fn get_file_timestamp(dir_entry: &DirEntry) -> Result<u64> {
         .modified()
         .context(io_error.clone())?
         .duration_since(SystemTime::UNIX_EPOCH)
-        .map_err(|e| {
-            error!("取文件时间戳失败：{e}");
-            Error::ComputeSystemTime
-        })?
+        .inspect_err(|e| error!("{e}"))
+        .map_err(|_| Error::ComputeSystemTime)?
         .as_secs();
     Ok(timestamp)
 }
@@ -164,12 +165,11 @@ async fn read_docx_file(path: &str) -> Result<String> {
         path: path.to_string(),
     })?;
 
-    String::from_utf8(output.stdout).map_err(|e| {
-        error!("读取文件{path}失败：{e}");
-        Error::UnsupportedEncoding {
+    String::from_utf8(output.stdout)
+        .inspect_err(|e| error!("{e}"))
+        .map_err(|_| Error::UnsupportedEncoding {
             path: path.to_string(),
-        }
-    })
+        })
 }
 
 #[cfg(windows)]
@@ -185,24 +185,20 @@ async fn output(command: &mut Command) -> core::result::Result<Output, std::io::
 
 #[instrument]
 async fn read_plain_file(path: &str) -> Result<String> {
-    match tokio::fs::read_to_string(path).await {
-        Err(e) => {
-            error!("读取文件{path}失败：{e}");
-            let io_error = OpenOrReadDocument {
-                path: path.to_string(),
-            };
-            let mut file = File::open(path).await.context(io_error.clone())?;
-            let mut buf = Vec::new();
-            file.read_to_end(&mut buf).await.context(io_error.clone())?;
-            GBK.decode(&buf, DecoderTrap::Strict).map_err(|e| {
-                error!("读取文件{path}失败：{e}");
-                Error::UnsupportedEncoding {
-                    path: path.to_string(),
-                }
-            })
-        }
-        Ok(s) => Ok(s),
+    if let Ok(s) = tokio::fs::read_to_string(path).await {
+        return Ok(s);
     }
+    let io_error = OpenOrReadDocument {
+        path: path.to_string(),
+    };
+    let mut file = File::open(path).await.context(io_error.clone())?;
+    let mut buf = Vec::new();
+    file.read_to_end(&mut buf).await.context(io_error.clone())?;
+    GBK.decode(&buf, DecoderTrap::Strict)
+        .inspect_err(|e| error!("{e}"))
+        .map_err(|_| Error::UnsupportedEncoding {
+            path: path.to_string(),
+        })
 }
 
 type Result<T> = core::result::Result<T, Error>;

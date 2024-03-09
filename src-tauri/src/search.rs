@@ -1,7 +1,6 @@
 use std::{fs::create_dir, path::Path};
 
 use async_walkdir::{Filtering, WalkDir};
-use log_error::LogError;
 use snafu::ResultExt;
 use snafu::Snafu;
 use tantivy::{
@@ -11,13 +10,15 @@ use tantivy::{
     schema::{Field, Schema},
     tokenizer::TokenizerManager,
     Document, Index, IndexReader, IndexSettings, IndexSortByField, IndexWriter, Order, Searcher,
-    TantivyError, Term,
+    TantivyError, Term, UserOperation,
 };
 use tokio_stream::StreamExt;
 use tracing::error;
 
 use crate::structs::{Docx, SearchFruit};
 use word_index::CommandError;
+
+const BATCH_NUM: u8 = 100;
 
 #[derive(Clone)]
 pub struct SearchState {
@@ -62,6 +63,9 @@ impl SearchState {
     }
 
     pub async fn index(&self, dir_path: String) -> Result<()> {
+        let mut writer = self.index.writer(100_000_000).context(CreateWriter)?;
+        let searcher = self.reader.searcher();
+
         let mut entries = WalkDir::new(dir_path).filter(|entry| async move {
             if let Some(true) = entry
                 .path()
@@ -73,21 +77,17 @@ impl SearchState {
             Filtering::Continue
         });
 
-        let mut writer = self.index.writer(100_000_000).context(CreateWriter)?;
-        let searcher = self.reader.searcher();
-
+        let mut i = 0;
         loop {
             match entries.next().await {
                 Some(Ok(entry)) => {
-                    let docx = Docx::new(&entry).await;
-                    match docx {
-                        Ok(docx) if !Self::exists(&searcher, &self.parser, &docx) => {
-                            Self::add_document(&mut writer, docx)
-                                .await
-                                .log_error("add document fault");
+                    if let Ok(docx) = Docx::new(&entry).await.inspect_err(|e| error!("{e}")) {
+                        if Self::exists(&searcher, &self.parser, &docx) {
+                            continue;
                         }
-                        Ok(_) => (),
-                        Err(e) => error!("{e}"),
+                        let _ = Self::add_document(&mut writer, docx)
+                            .await
+                            .inspect_err(|e| error!("{e}"));
                     }
                 }
                 Some(e) => {
@@ -95,7 +95,13 @@ impl SearchState {
                 }
                 None => break,
             }
+            i += 1;
+            if i % BATCH_NUM == 0 {
+                writer.commit().context(Commit)?;
+            }
         }
+
+        writer.commit().context(Commit)?;
 
         Ok(())
     }
@@ -108,13 +114,13 @@ impl SearchState {
         classes: Option<Vec<String>>,
     ) -> Result<SearchFruit> {
         let filter = if !keyword.is_empty() {
-            let mut filter = format!("name:{} OR content:{}", keyword, keyword);
-            if let Some(classes) = classes {
-                if !classes.is_empty() {
-                    filter = format!("({}) AND class:IN [{}]", filter, classes.join(" "));
+            let filter = format!("name:{} OR content:{}", keyword, keyword);
+            match classes {
+                Some(classes) if !classes.is_empty() => {
+                    format!("({}) AND class:IN [{}]", filter, classes.join(" "))
                 }
+                _ => filter,
             }
-            filter
         } else {
             String::from("*")
         };
@@ -153,43 +159,39 @@ impl SearchState {
     }
 
     fn get_field_value(doc: &Document, schema: &Schema, name: &str) -> String {
-        let field = schema.get_field(name);
-        if let Ok(field) = field {
-            let field_value = doc.get_first(field).and_then(|v| v.as_text());
-            if let Some(value) = field_value {
-                return value.to_string();
-            }
+        if let Ok(field) = schema.get_field(name).inspect_err(|e| error!("{e}")) {
+            doc.get_first(field)
+                .and_then(|v| v.as_text())
+                .map(|s| s.to_owned())
+                .unwrap_or_default()
+        } else {
+            String::new()
         }
-        String::new()
     }
 
     async fn add_document(writer: &mut IndexWriter, mut docx: Docx) -> Result<()> {
         // id field must 0
         let field = Field::from_field_id(0);
         let term = Term::from_field_text(field, docx.get_id());
-        // 先删
-        writer.delete_term(term);
         docx.set_content().await.context(OpenOrReadDocument)?;
-        writer.add_document(docx.into()).context(AddDocument)?;
-        writer.commit().context(Commit)?;
+        // 先删
+        let opers = vec![UserOperation::Delete(term), UserOperation::Add(docx.into())];
+        writer.run(opers).context(AddDocument)?;
         Ok(())
     }
 
     fn exists(searcher: &Searcher, parser: &QueryParser, docx: &Docx) -> bool {
-        let query = parser.parse_query(&format!(
-            "id:{} AND timestamp:{}",
-            docx.get_id(),
-            docx.get_timestamp()
-        ));
-        if let Ok(query) = query {
-            let rs = searcher.search(&query, &Count);
-            if let Ok(rs) = rs {
-                return rs > 0;
-            } else {
-                error!("{rs:?}")
+        if let Ok(query) = parser
+            .parse_query(&format!(
+                "id:{} AND timestamp:{}",
+                docx.get_id(),
+                docx.get_timestamp()
+            ))
+            .inspect_err(|e| error!("{e}"))
+        {
+            if let Ok(count) = searcher.search(&query, &Count) {
+                return count > 0;
             }
-        } else {
-            error!("{query:?}");
         }
 
         false
