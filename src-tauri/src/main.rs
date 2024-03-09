@@ -8,6 +8,7 @@ use command_result::CommandError;
 use command_result::Result;
 use search::SearchState;
 use structs::SearchFruit;
+use tauri::async_runtime;
 use tauri::Manager;
 use tauri::State;
 use time::{macros::format_description, UtcOffset};
@@ -53,7 +54,14 @@ fn main() {
 /// 为指定路径的文件创建索引
 #[tauri::command]
 async fn index_doc_file(dir_path: String, state: State<'_, SearchState>) -> Result<()> {
-    state.index(dir_path).await?;
+    let handle = async_runtime::TokioHandle::current();
+    let search = state.inner().clone();
+    // If the indexing pipeline is full, this call may block.
+    let _ = async_runtime::spawn_blocking(move || {
+        handle.block_on(async { search.index(dir_path).await })
+    })
+    .await
+    .map_err(|e| CommandError(e.to_string()))?;
     Ok(())
 }
 
@@ -78,10 +86,9 @@ async fn save_path(path: String) -> Result<()> {
     let mut config = Config::load().await?;
     if config.paths.contains(&path) {
         return Err(CommandError(format!("{path}\n索引路径已存在！")));
-    } else {
-        config.paths.push(path);
-        config.save().await?;
     }
+    config.paths.push(path);
+    config.save().await?;
 
     Ok(())
 }
