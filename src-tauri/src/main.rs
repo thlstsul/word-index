@@ -120,6 +120,6 @@ fn open_file_by_default_program(path: &str) -> Result<()> {
 }
 
 #[cfg(not(windows))]
-fn open_file_by_default_program(path: &str) -> Result<()> {
+fn open_file_by_default_program(_path: &str) -> Result<()> {
     Err(CommandError(String::from("未适配！")))
 }

@@ -9,7 +9,7 @@ fn main() {
 mod pandoc {
     use std::env;
     use std::fs::{create_dir_all, File, OpenOptions};
-    use std::io::{BufReader, BufWriter, Cursor, Read, Write};
+    use std::io::{Cursor, Read, Write};
     use std::path::PathBuf;
     use std::time::Duration;
 
@@ -106,10 +106,10 @@ mod pandoc {
             .unwrap()
             .path();
 
-        let pandoc_bin = File::open(pandoc_bin_dir.join(origin)).unwrap();
-        let bin = File::create(bin_dir.join(target)).unwrap();
+        let pandoc_bin = pandoc_bin_dir.join(origin);
+        let bin = bin_dir.join(target);
         println!("{:?} -> {:?}", pandoc_bin, bin);
-        std::io::copy(&mut BufReader::new(pandoc_bin), &mut BufWriter::new(bin)).unwrap();
+        std::fs::copy(pandoc_bin, bin).unwrap();
 
         // Write the sha1 for the dashboard back to file.
         let mut file = OpenOptions::new()
