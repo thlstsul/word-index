@@ -3,6 +3,9 @@ use std::{fs::create_dir, path::Path};
 use async_walkdir::{Filtering, WalkDir};
 use snafu::ResultExt;
 use snafu::Snafu;
+use tantivy::tokenizer::LowerCaser;
+use tantivy::tokenizer::RemoveLongFilter;
+use tantivy::tokenizer::TextAnalyzer;
 use tantivy::{
     collector::{Count, MultiCollector, TopDocs},
     directory::MmapDirectory,
@@ -32,6 +35,10 @@ impl SearchState {
     pub fn new() -> Self {
         let schema = Docx::schema();
         let tokenizer = tantivy_jieba::JiebaTokenizer {};
+        let tokenizer = TextAnalyzer::builder(tokenizer)
+            .filter(RemoveLongFilter::limit(40))
+            .filter(LowerCaser)
+            .build();
         let tokenizers = TokenizerManager::default();
         tokenizers.register("default", tokenizer);
         let settings = IndexSettings {
